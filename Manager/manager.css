@@ -101,8 +101,29 @@ body{
     border: 2px solid black; 
 }
 
-
+#report_table td, #times_table td{
+    padding: 1em; 
+}
 
 #times_form{
     padding-top: 1em;
+}
+
+.navbar button{
+    border-radius: 5px; 
+    background-color: #EEF8FF;
+    color: black; 
+}
+
+.time_slots button{
+    border-radius: 50%;
+    background-color: #7D53DE;
+    color: #EEF8FF; 
+}
+
+#btnUser{
+    border-radius: 50%; 
+    background-color: #EEF8FF;
+    color: black;
+    padding: 1em;  
 }
