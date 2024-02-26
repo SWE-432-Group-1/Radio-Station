@@ -3,7 +3,7 @@ body{
     padding: 0;
 }
 
-.container > div{
+.container > article, .container nav, .container footer{
     border: 0;
     border-radius: 3px;
 	box-shadow: 2px 2px 2px 2px #7D53DE;

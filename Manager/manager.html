@@ -6,8 +6,9 @@
     </head>
 
     <body>
-    <div class="container">
-        <div class="navbar">
+    <main class="container">
+        
+        <nav class="navbar">
             <img id="logo" src="imgs/gmu.png">
             <button id="btnManager">Manager</button>
             <button id="btnProducer">Producer</button>
@@ -17,14 +18,14 @@
                 <input id="search_bar" type="text" name="search_bar">
             </div>
             <button id="btnUser">User Profile</button>
-        </div>
+        </nav>
     
-        <div class="calendar">
+        <article class="calendar">
             <label>Date</label>
             <input id="date_box" type="date" name="selected_date">
-        </div>
+        </article>
     
-        <div class="time_slots">
+        <article class="time_slots">
             <table id="times_table">
                 <thead>
                     <tr>
@@ -54,9 +55,9 @@
                 <label>DJ's Name</label>
                 <input id="DJ_box" type="text" name="DJ_box">
             </form>
-        </div>
+        </article>
     
-        <div class="report">
+        <article class="report">
             <table id="report_table">
                 <thead>
                     <tr>
@@ -76,20 +77,21 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </article>
     
-        <div class="producer_notes">
+        <article class="producer_notes">
             <h3>Today's Producer Notes</h3>
             <ul id="producer_notes">
                 <!-- This will be populated using JavaScript -->
                 <!-- The entry below is just for an example -->
                 <li>Filler</li>
             </ul>
-        </div>
+        </article>
     
-        <div class="footer">
+        <footer class="footer">
             <p>About us</p>
-        </div>
-    </div>
+        </footer>
+    
+    </main>
     </body>
 </html>
