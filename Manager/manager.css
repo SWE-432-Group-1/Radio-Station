@@ -1,6 +1,7 @@
 body{
     margin: 0;
     padding: 0;
+    font-family: "Open Sans", "Adjusted Arial", "Tahoma", "Geneva", "sans-serif";
 }
 
 .container > article, .container nav, .container footer{
@@ -11,13 +12,13 @@ body{
 }
 
 .container{
-    background-color:#34f6f2;
+    background-color: #78E3FD;
     height: 100%;
     width: 100%;
     display: grid;  
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 10% 1fr 2fr 1fr 0.5fr;
+    grid-template-rows: 10% 1fr 2fr 1fr 1fr;
     grid-template-areas: "nav nav"
                         "cal report"
                         "times report"
@@ -34,7 +35,7 @@ body{
     grid-area: nav;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 
     background-color: #d1f5ff;
@@ -69,8 +70,10 @@ body{
 
 .footer{
     grid-area: footer;
-
     background-color: #d1f5ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 #times_table{
@@ -107,12 +110,6 @@ body{
 
 #times_form{
     padding-top: 1em;
-}
-
-.navbar button{
-    border-radius: 5px; 
-    background-color: #EEF8FF;
-    color: black; 
 }
 
 .time_slots button{
