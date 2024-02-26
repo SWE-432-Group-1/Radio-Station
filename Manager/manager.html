@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Manager</title>
+		<link rel="stylesheet" href="manager.css">
+    </head>
+
+    <body>
+    <div class="container">
+        <div class="navbar">
+            <img id="logo" src="imgs/gmu.png">
+            <button id="btnManager">Manager</button>
+            <button id="btnProducer">Producer</button>
+            <button id="btnDJ">DJ</button>
+            <div class="search_bar_div">
+                <label>Search Bar</label>
+                <input id="search_bar" type="text" name="search_bar">
+            </div>
+            <button id="btnUser">User Profile</button>
+        </div>
+    
+        <div class="calendar">
+            <label>Date</label>
+            <input id="date_box" type="date" name="selected_date">
+        </div>
+    
+        <div class="time_slots">
+            <table id="times_table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Today's Bookings</th>
+                    </tr>
+                    <tr>
+                        <th>Time Slots</th>
+                        <th>DJs</th>
+                    </tr>
+                </thead>
+                    <!-- This will be populated using JavaScript-->
+                    <!-- The row below is just for an example -->
+                <tbody>    
+                    <tr>
+                        <td>
+                            <button>-</button>
+                            Time 1
+                        </td>
+                        <td>Dj 1</td>
+                    </tr>
+                </tbody>
+            </table>
+            <form id="times_form">
+                <button>+</button>
+                <label>Time</label>
+                <input id="time_box" type="time" name="time_box">
+                <label>DJ's Name</label>
+                <input id="DJ_box" type="text" name="DJ_box">
+            </form>
+        </div>
+    
+        <div class="report">
+            <table id="report_table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Today's Report</th>
+                    </tr>
+                    <tr>
+                        <th>Producer Assigned Songs</th>
+                        <th>DJ Played Songs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- This will be populated using JavaScript-->
+                    <!-- The row below is just for an example -->
+                    <tr>
+                        <td>Song assigned 1</td>
+                        <td>Song played 1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="producer_notes">
+            <h3>Today's Producer Notes</h3>
+            <ul id="producer_notes">
+                <!-- This will be populated using JavaScript -->
+                <!-- The entry below is just for an example -->
+                <li>Filler</li>
+            </ul>
+        </div>
+    
+        <div class="footer">
+            <p>About us</p>
+        </div>
+    </div>
+    </body>
+</html>

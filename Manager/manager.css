@@ -1,0 +1,108 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.container > div{
+    border: 0;
+    border-radius: 3px;
+	box-shadow: 2px 2px 2px 2px #7D53DE;
+    padding:1em; 
+}
+
+.container{
+    background-color:#34f6f2;
+    height: 100%;
+    width: 100%;
+    display: grid;  
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 10% 1fr 2fr 1fr 0.5fr;
+    grid-template-areas: "nav nav"
+                        "cal report"
+                        "times report"
+                        "notes notes"
+                        "footer footer";
+    gap: 20px; 
+}
+
+#logo{
+    height: 100%; 
+}
+
+.navbar{
+    grid-area: nav;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    background-color: #d1f5ff;
+}
+
+.calendar{
+    grid-area: cal;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.time_slots{
+    grid-area: times;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.report{
+    grid-area: report;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.producer_notes{
+    grid-area: notes;
+
+}
+
+.footer{
+    grid-area: footer;
+
+    background-color: #d1f5ff;
+}
+
+#times_table{
+    height: 100%; 
+    border: 2px solid black; 
+    border-collapse: collapse;
+}
+
+#times_table tbody tr td{
+    vertical-align: top;
+}
+
+#times_table th, #times_table td{
+    border: 2px solid black; 
+}
+
+#report_table{
+    height: 100%; 
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+#report_table tbody tr td{
+    vertical-align: top;
+}
+
+#report_table th, #report_table td{
+    border: 2px solid black; 
+}
+
+
+
+#times_form{
+    padding-top: 1em;
+}
