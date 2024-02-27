@@ -1,0 +1,126 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", "Adjusted Arial", "Tahoma", "Geneva", "sans-serif";
+}
+
+.container > article, .container nav, .container footer{
+    border: 0;
+    border-radius: 3px;
+	box-shadow: 2px 2px 2px 2px #7D53DE;
+    padding:1em; 
+}
+
+.container{
+    background-color: #78E3FD;
+    height: 100%;
+    width: 100%;
+    display: grid;  
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 10% 1fr 2fr 1fr 1fr;
+    grid-template-areas: "nav nav"
+                        "cal report"
+                        "times report"
+                        "notes notes"
+                        "footer footer";
+    gap: 20px; 
+}
+
+#logo{
+    height: 100%; 
+}
+
+.navbar{
+    grid-area: nav;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #d1f5ff;
+}
+
+.calendar{
+    grid-area: cal;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.time_slots{
+    grid-area: times;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.report{
+    grid-area: report;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.producer_notes{
+    grid-area: notes;
+
+}
+
+.footer{
+    grid-area: footer;
+    background-color: #d1f5ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#times_table{
+    height: 100%; 
+    border: 2px solid black; 
+    border-collapse: collapse;
+}
+
+#times_table tbody tr td{
+    vertical-align: top;
+}
+
+#times_table th, #times_table td{
+    border: 2px solid black; 
+}
+
+#report_table{
+    height: 100%; 
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+#report_table tbody tr td{
+    vertical-align: top;
+}
+
+#report_table th, #report_table td{
+    border: 2px solid black; 
+}
+
+#report_table td, #times_table td{
+    padding: 1em; 
+}
+
+#times_form{
+    padding-top: 1em;
+}
+
+.time_slots button{
+    border-radius: 50%;
+    background-color: #7D53DE;
+    color: #EEF8FF; 
+}
+
+#btnUser{
+    border-radius: 50%; 
+    background-color: #EEF8FF;
+    color: black;
+    padding: 1em;  
+}
