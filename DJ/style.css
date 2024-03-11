@@ -14,6 +14,10 @@ body {
 main {
   width: 100%;
   height: 80vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Main Content */
@@ -54,4 +58,39 @@ main {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  position: relative;
+  bottom: 0;
+}
+
+.draggable-table__drag {
+  font-size: 0.95em;
+  font-weight: lighter;
+  position: relative;
+
+  border: 1px solid #f1f1f1;
+  z-index: 10;
+  cursor: grabbing;
+  -webkit-box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.05);
+
+  opacity: 0.5;
+  background-color: #13ccff;
+}
+
+.draggable-table > tbody > tr > td {
+  user-select: none;
+}
+
+.is-dragging {
+  background: #d1f5ff;
+  user-select: none;
+}
+
+.is-dragging > td {
+  color: #78e3fd;
+  user-select: none;
+}
+
+.draggable-table > tbody > tr {
+  cursor: grabbing;
 }
