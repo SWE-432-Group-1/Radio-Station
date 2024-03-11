@@ -91,6 +91,10 @@ const generatePlaylistRows = (rows) => {
     const configurationSubmit = document.createElement("button");
     configurationSubmit.textContent = "Save";
     configurationSubmit.onclick = () => {
+      if (configurationInput.value.length === 0) {\
+        alert("Title cannot be empty");
+        return;
+      }
       row.title = configurationInput.value;
       titleTD.textContent = configurationInput.value;
       configurationDialog.close();
@@ -135,9 +139,9 @@ const generateTimeslotList = (items) => {
     input.name = "timeslot";
     input.id = id;
     input.value = item.id;
-    input.onclick = () => {
+    input.addEventListener("click", () => {
       generatePlaylistRows(item.playlistRows);
-    };
+    });
 
     if (item.selected) {
       input.checked = true;
