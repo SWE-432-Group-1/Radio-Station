@@ -18,17 +18,17 @@ body{
     display: grid;  
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 10% 1fr 2fr 1fr 1fr;
+    grid-template-rows: 10% 1fr 2fr 2fr 0.5fr;
     grid-template-areas: "nav nav"
                         "cal report"
                         "times report"
                         "notes notes"
                         "footer footer";
-    gap: 20px; 
+    gap: 10px; 
 }
 
 #logo{
-    height: 100%; 
+    height: 80%; 
 }
 
 .navbar{
@@ -54,6 +54,8 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    overflow: auto;
+    max-height: 300px;
 }
 
 .report{
@@ -61,11 +63,19 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    overflow: auto;
+    max-height: 500px;
 }
 
 .producer_notes{
     grid-area: notes;
+    overflow:auto;
+    max-height: 320px;
+}
 
+.producer_notes h3{
+    text-align: center;
+    padding-bottom: 1em;
 }
 
 .footer{
@@ -82,7 +92,7 @@ body{
     border-collapse: collapse;
 }
 
-#times_table tbody tr td{
+#times_table tr td{
     vertical-align: top;
 }
 
@@ -96,7 +106,7 @@ body{
     border-collapse: collapse;
 }
 
-#report_table tbody tr td{
+#report_table tr td{
     vertical-align: top;
 }
 
@@ -109,7 +119,7 @@ body{
 }
 
 #times_form{
-    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 .time_slots button{
@@ -123,4 +133,9 @@ body{
     background-color: #EEF8FF;
     color: black;
     padding: 1em;  
+}
+
+#btnUndo{
+    margin-left: 90%;
+    padding: .5em;
 }
