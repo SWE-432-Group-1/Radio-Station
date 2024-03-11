@@ -3,6 +3,12 @@
   <head>
     <title>DJ Page</title>
     <link rel="stylesheet" href="style.css" />
+    <script>
+      function addPlaylist() {
+        const dialog = document.querySelector("dialog#add_playlist");
+        dialog.showModal();
+      }
+    </script>
   </head>
 
   <body>
@@ -38,6 +44,7 @@
               padding: 10px;
               font-size: 50px;
             "
+            id="motd"
           >
             MOTD
           </div>
@@ -74,9 +81,103 @@
                 <button
                   id="add_playlist"
                   style="margin-left: 10px; font-size: 20px"
+                  onclick="addPlaylist()"
                 >
                   +
                 </button>
+                <dialog id="add_playlist">
+                  <form method="dialog">
+                    <input type="text" style="width: 90%" />
+                    <br />
+                    <h2 style="text-decoration: underline">Songs</h2>
+                    <ul id="add_record_song_list" style="font-size: large">
+                      <li>Song 1</li>
+                      <li>Song 2</li>
+                      <li>Song 3</li>
+                    </ul>
+                    <h2 style="text-decoration: underline">
+                      Previous Playlists
+                    </h2>
+                    <div
+                      id="add_record_playlist_list"
+                      style="
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        padding: 1px;
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 1
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 2
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 3
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <menu
+                      style="width: 80%; display: flex; justify-content: end"
+                    >
+                      <button id="cancel_button" value="cancel">Cancel</button>
+                      <button
+                        id="ok_button"
+                        style="margin-left: 2px"
+                        value="ok"
+                      >
+                        OK
+                      </button>
+                    </menu>
+                  </form>
+                </dialog>
               </div>
               <hr style="width: 95%" />
               <table

@@ -67,6 +67,47 @@ const generatePlaylistRows = (rows) => {
     const configureButton = document.createElement("button");
     configureButton.innerHTML = "&#9881;";
     configureButtonTD.appendChild(configureButton);
+
+    // I miss components ;(
+    const configurationDialog = document.createElement("dialog");
+    const configurationForm = document.createElement("form");
+    configurationForm.style.display = "flex";
+    configurationForm.style.flexDirection = "column";
+
+    const configurationLabel = document.createElement("label");
+    configurationLabel.textContent = "Title";
+    const configurationInput = document.createElement("input");
+    configurationInput.type = "text";
+    configurationInput.value = row.title;
+    const configurationMenu = document.createElement("menu");
+    configurationMenu.type = "toolbar";
+
+    const configurationDelete = document.createElement("button");
+    configurationDelete.textContent = "Delete";
+    configurationDelete.onclick = () => {
+      tr.remove();
+      configurationDialog.close();
+    };
+    const configurationSubmit = document.createElement("button");
+    configurationSubmit.textContent = "Save";
+    configurationSubmit.onclick = () => {
+      row.title = configurationInput.value;
+      titleTD.textContent = configurationInput.value;
+      configurationDialog.close();
+    };
+    configurationSubmit.style.marginLeft = "2px";
+    configurationMenu.appendChild(configurationDelete);
+    configurationMenu.appendChild(configurationSubmit);
+
+    configurationForm.appendChild(configurationLabel);
+    configurationForm.appendChild(configurationInput);
+    configurationForm.appendChild(configurationMenu);
+    configurationDialog.appendChild(configurationForm);
+    configureButtonTD.appendChild(configurationDialog);
+    configureButton.onclick = () => {
+      configurationDialog.showModal();
+    };
+
     tr.appendChild(configureButtonTD);
   });
 };
@@ -176,3 +217,17 @@ const timeslotList = [
 ];
 
 generateTimeslotList(timeslotList);
+
+const getMessageOfDay = () => {
+  const motd = "MOTD Dynamic!";
+
+  return motd;
+};
+
+const setMOTDElement = () => {
+  const motd = getMessageOfDay();
+  const motdElement = document.getElementById("motd");
+  motdElement.textContent = motd;
+};
+
+setMOTDElement();
