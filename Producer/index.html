@@ -11,77 +11,26 @@
     <main class="container">
         <nav class="nav-bar">
             <div><img id="web-logo" src="images/logo.png"></div>
-            <div><button id="user" style="padding: 20px; border-radius: 50px;">User</button></div>
+            <div onclick="alert('Functionality not available at the moment!')" id="user" style="border-radius: 50%; width: 70px; height: 70px;">User</div>
         </nav>
         <article class="body">
             <div class="calendar">
-                <div id="events">
-                    <div
-                        style="box-shadow: 1px 1px 1px 1px #7D53DE; border-radius: 2px; padding: 0.4em; text-align: center;">
-                        Event</div>
-                    <div
-                        style="box-shadow: 1px 1px 1px 1px #7D53DE; border-radius: 2px; padding: 0.4em; text-align: center;">
-                        Event</div>
-                    <div
-                        style="box-shadow: 1px 1px 1px 1px #7D53DE; border-radius: 2px; padding: 0.4em; text-align: center;">
-                        Event</div>
+                <div id="events"></div>
+                <div id="calendar-body"></div>
+                <div style="text-align: center;">
+                    < February 2024 >
                 </div>
-                <div id="calendar-body">
-                    <!-- JavaScript will populate this -->
-                    <!-- Placeholder for now -->
-                    <div>1</div>
-                    <div>2</div>
-                    <div>3</div>
-                    <div>4</div>
-                    <div>5</div>
-                    <div>6</div>
-                    <div>7</div>
-                    <div>8</div>
-                    <div>9</div>
-                    <div>10</div>
-                    <div>11</div>
-                    <div>12</div>
-                    <div>13</div>
-                    <div>14</div>
-                    <div>15</div>
-                    <div>16</div>
-                    <div>17</div>
-                    <div>18</div>
-                    <div>19</div>
-                    <div>20</div>
-                    <div>21</div>
-                    <div>22</div>
-                    <div>23</div>
-                    <div>24</div>
-                    <div>25</div>
-                    <div>26</div>
-                    <div>27</div>
-                    <div>28</div>
-                    <div>29</div>
-                </div>
-                <div style="text-align: center;">February 2024</div>
             </div>
             <div class="song-list">
                 <div id="song-search">
                     <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 0.8em; border-radius: 5px;">
                         <div style="padding: 0.5em;">
-                            <input id="song" type="text" name="song" placeholder="Search song" style="width: 500px">
+                            <input id="song" type="text" name="song" placeholder="Search song" style="width: 450px">
                             <select name="djs" id="djs">
-                                <option value="dj 1">DJ 1</option>
-                                <option value="dj 2">DJ 2</option>
-                                <option value="dj 3">DJ 3</option>
+                                <option value="default">Select DJ</option>
                             </select>
                         </div>
-                        <div>
-                            <p>1. Song</p>
-                            <p>2. Song</p>
-                            <p>3. Song</p>
-                            <p>4. Song</p>
-                            <p>5. Song</p>
-                            <p>6. Song</p>
-                            <p>7. Song</p>
-                            <p>8. Song</p>
-                        </div>
+                        <table id="song-names"></table>
                     </form>
                 </div>
             </div>
@@ -89,40 +38,23 @@
         <article class="body">
             <div class="dj-list">
                 <div id="dj-search">
-                    <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <form name="dj-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
                         <div style="padding: 1em;">
                             <input id="dj" type="text" name="dj" placeholder="Search DJ" style="width: 367px;">
-                            <button>Search</button>
+                            <button type="button" onclick="djSearch()">Search</button>
                         </div>
-                        <table id="dj-names">
-                            <p>DJ Name</p>
-                            <button>Book</button>
-                            <p>DJ Name</p>
-                            <button>Book</button>
-                            <p>DJ Name</p>
-                            <button>Book</button>
-                            <p>DJ Name</p>
-                            <button>Book</button>
-                        </table>
+                        <table id="dj-names"></table>
                     </form>
                 </div>
             </div>
             <div class="pod-list">
                 <div id="pod-search">
-                    <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <form name="pod-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
                         <div style="padding: 1em;">
                             <input id="pod" type="text" name="pod" placeholder="Search Podcast" style="width: 470px;">
-                            <button>Search</button>
+                            <button type="button" onclick="podSearch()">Search</button>
                         </div>
-                        <table id="pods">
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                            <p>Podcast Name</p>
-                        </table>
+                        <table id="pods"></table>
                     </form>
                 </div>
             </div>
@@ -132,6 +64,64 @@
         <p>About us</p>
         <p>Contact Us</p>
     </footer>
+
+    <script src="js/songs.js"></script>
+    <script src="js/podcast.js"></script>
+    <script src="js/calendar.js"></script>
+
+    <script>
+        var eventsList = [];
+
+        // adds new events from calendar
+        document.querySelectorAll('#calendar-body div:nth-child(n+8)').forEach((e) => {
+            e.addEventListener('click',function() {
+                const name = prompt('Event Name:');
+                if (!name)
+                    // no event name was given
+                    alert('No event name was provided!');
+                if (eventsList.length >= 7)
+                    // events exceeds the limit
+                    alert('Too many events have been added!');
+                if (name && eventsList.length < 7) {
+                    // only 7 events can be added for now
+                    eventsList.push(name);
+                    document.querySelector('#events').innerHTML = "";
+                    printEvents();
+                    alert(`Event "${name}" added to events!`);
+                }
+            });
+        });
+
+        // display events
+        function printEvents() {
+            for (let e of eventsList) {
+                const doc = document.createElement('div');
+                doc.style.boxShadow = "1px 1px 1px 1px #7D53DE";
+                doc.style.borderRadius = "2px";
+                doc.style.padding = "0.4em";
+                doc.style.textAlign = "center";
+                doc.innerHTML = e;
+                document.querySelector('#events').appendChild(doc);
+            }
+        }
+
+        // function for podcast search bar
+        function podSearch() {
+            if(!document.forms['pod-form']['pod'].value)
+                alert('Must enter something to search!');
+            else
+                alert('Funtionality not available at the moment!');
+        }
+
+        // function for dj search bar
+        function djSearch() {
+            if(!document.forms['dj-form']['dj'].value)
+                alert('Must enter something to search!');
+            else
+                alert('Funtionality not available at the moment!');
+        }
+    </script>
+
 </body>
 
 </html>

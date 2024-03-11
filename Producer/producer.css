@@ -29,14 +29,123 @@ body {
 .calendar {
     padding: 1em;
     border-radius: 5px;
-    box-shadow: 2px 2px 2px 2px #7D53DE;
+    box-shadow: 3px 3px 3px 3px #7D53DE;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#dj-names div {
+    display: grid;
+    box-shadow: 1px 1px 1px 1px #7D53DE;
+    padding: 0.34em;
+    border-radius: 5px;
+    grid-template-columns: 150px 150px 150px;
+}
+
+#dj-names td:nth-child(n+4) {
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    border: 1px solid black;
+    align-items: center;
+    width: 50%;
+    background-color: #D1F5FF;
+}
+
+#dj-names td:hover:nth-child(n+4) {
+    box-shadow: 1px 2px 2px #7D53DE;
+    cursor: pointer;
+    background-color: #b8e4ef;
+}
+
+#dj-names button:active {
+    transform: translateY(1px);
+    background-color: #7D53DE;
+}
+
+#user {
+    background-color: #78E3FD;
+    display: flex;
+    border: 0.5px solid black;
+    align-items: center;
+    margin: 1px;
+    justify-content: center;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+}
+
+#user:hover {
+    box-shadow: 1px 2px 2px #7D53DE;
+    background-color: #6edcf8;
+    cursor: pointer;
+}
+
+#user:active {
+    transform: translateY(1px);
+    background-color: #7D53DE;
 }
 
 #calendar-body {
     display: grid;
     padding: 1em;
     grid-template-columns: 20px 20px 20px 20px 20px 20px 20px;
-    gap: 50px;
+    gap: 45px;
+}
+
+#calendar-body div:nth-child(n+8) {
+    background-color: #D1F5FF;
+    display: flex;
+    margin: 1px;
+    width: 35px;
+    height: 35px;
+    align-items: center;
+    border: 0.1px solid black;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#calendar-body div:nth-child(n+1) {
+    display: flex;
+    height: 35px;
+    width: 35px;
+    justify-content: center;
+    border-radius: 50%;
+    align-items: center;
+    margin: 1px;
+}
+
+#calendar-body div:hover:nth-child(n+8) {
+    background-color: #b8e4ef;
+    cursor: pointer;
+    box-shadow: 1px 1px 2px #7D53DE;
+}
+
+#calendar-body div:active:nth-child(n+8) {
+    background-color: #7D53DE;
+    transform: translateY(1px);
+}
+
+#djs:hover {
+    cursor: pointer;
+}
+
+#pods div {
+    display: grid;
+    grid-template-columns: 220px 160px 160px;
+    box-shadow: 1px 1px 1px 1px #7D53DE;
+    padding: 1em;
+    border-radius: 5px;
+}
+
+#song-names div {
+    display: grid;
+    grid-template-columns: 400px 140px;
+    border-radius: 5px;
+    padding: 1.17em;
+    box-shadow: 1px 1px 1px 1px #7D53DE;
 }
 
 #web-logo {
@@ -51,8 +160,8 @@ body {
     display: grid;
     border-radius: 3px;
     box-shadow: 1px 1px 1px 1px #7D53DE;
-    grid-template-columns: 50px 50px 50px;
-    column-gap: 20px;
+    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;
+    column-gap: 15px;
 }
 
 .footer {
