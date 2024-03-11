@@ -91,7 +91,7 @@ const generatePlaylistRows = (rows) => {
     const configurationSubmit = document.createElement("button");
     configurationSubmit.textContent = "Save";
     configurationSubmit.onclick = () => {
-      if (configurationInput.value.length === 0) {\
+      if (configurationInput.value.length === 0) {
         alert("Title cannot be empty");
         return;
       }
