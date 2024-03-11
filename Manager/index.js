@@ -196,6 +196,14 @@ function onSubmit(e){
         if (et_date.getTime() >= tr_st && et_date.getTime() <= tr_et){
             // Event being added ends during this one
             overlap = true; 
+        }
+        if (tr_st >= st_date.getTime() && tr_st <= et_date.getTime()){
+            // Event in table starts during this one
+            overlap = true;
+        }
+        if (tr_et >= st_date.getTime() && tr_et <= et_date.getTime()){
+            // Event in table ends during this one
+            overlap = true; 
         }  
     }
     if (overlap){
