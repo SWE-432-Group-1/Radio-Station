@@ -1,7 +1,8 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: "Open Sans", "Adjusted Arial", "Tahoma", "Geneva", "sans-serif";
+  font-family: "Open Sans", "Adjusted Arial", "Tahoma", "Geneva", "Helvetica",
+    "sans-serif";
 }
 
 .nav-bar {

@@ -3,6 +3,12 @@
   <head>
     <title>DJ Page</title>
     <link rel="stylesheet" href="style.css" />
+    <script>
+      function addPlaylist() {
+        const dialog = document.querySelector("dialog#add_playlist");
+        dialog.showModal();
+      }
+    </script>
   </head>
 
   <body>
@@ -27,18 +33,18 @@
           width: 100%;
           height: 100%;
           background-color: #494947;
-          padding: 25px 0;
         "
       >
         <div style="padding: 10px">
           <div
             style="
-              width: 100%;
+              width: 98%;
               text-align: center;
               background-color: #78e3fd;
               padding: 10px;
               font-size: 50px;
             "
+            id="motd"
           >
             MOTD
           </div>
@@ -48,19 +54,17 @@
             style="
               display: flex;
               height: 100%;
-              width: 100%;
+              width: 98%;
               justify-content: space-between;
             "
           >
             <div class="main_card">
               <h2 style="text-align: center">Time Slots</h2>
               <hr style="width: 90%" />
-              <ul style="list-style-type: none; font-size: large">
-                <li>
-                  <input type="radio" name="1/2/70" id="1/2/70" />
-                  <label for="1/2/70">1/2/70 04:00 - 10:00</label>
-                </li>
-              </ul>
+              <ul
+                id="timeslot_list"
+                style="list-style-type: none; font-size: large"
+              ></ul>
             </div>
             <div class="main_card">
               <div
@@ -74,30 +78,118 @@
               >
                 <h2>Current Playlist</h2>
                 <button
-                  style="border-radius: 100%; position: absolute; right: 10px"
+                  id="add_playlist"
+                  style="margin-left: 10px; font-size: 20px"
+                  onclick="addPlaylist()"
                 >
-                  A
+                  +
                 </button>
+                <dialog id="add_playlist">
+                  <form method="dialog">
+                    <input type="text" style="width: 90%" />
+                    <br />
+                    <h2 style="text-decoration: underline">Songs</h2>
+                    <ul id="add_record_song_list" style="font-size: large">
+                      <li>Song 1</li>
+                      <li>Song 2</li>
+                      <li>Song 3</li>
+                    </ul>
+                    <h2 style="text-decoration: underline">
+                      Previous Playlists
+                    </h2>
+                    <div
+                      id="add_record_playlist_list"
+                      style="
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        padding: 1px;
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 1
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 2
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          Playlist 3
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <li>Song 1</li>
+                          <li>Song 2</li>
+                          <li>Song 3</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <menu
+                      style="width: 80%; display: flex; justify-content: end"
+                    >
+                      <button id="cancel_button" value="cancel">Cancel</button>
+                      <button
+                        id="ok_button"
+                        style="margin-left: 2px"
+                        value="ok"
+                      >
+                        OK
+                      </button>
+                    </menu>
+                  </form>
+                </dialog>
               </div>
               <hr style="width: 95%" />
-              <table style="width: 100%; text-align: center">
+              <table
+                id="playlist_table"
+                style="width: 100%; text-align: center"
+                class="draggable_table"
+              >
                 <tr>
                   <th></th>
-                  <th>#</th>
+                  <th id="number_column">#</th>
                   <th>Name</th>
                   <th>Producer Selected</th>
                   <th></th>
-                </tr>
-                <tr>
-                  <td>
-                    <div>Hamburger Icon</div>
-                  </td>
-                  <td>1</td>
-                  <td>song1</td>
-                  <td>producer1</td>
-                  <td>
-                    <button>Gear Icon</button>
-                  </td>
                 </tr>
               </table>
             </div>
@@ -110,5 +202,7 @@
       <br />
       <p>Contact us</p>
     </footer>
+    <script src="js/util.js"></script>
+    <script src="js/drag.js"></script>
   </body>
 </html>
