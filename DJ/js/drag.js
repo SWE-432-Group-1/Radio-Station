@@ -8,85 +8,87 @@ const createDraggableTable = (table_id) => {
     (el) => el.id === "number_column"
   );
 
-  let currRow = null,
+  let selected_row = null,
     dragElem = null,
-    mouseDownY = 0,
-    mouseY = 0,
-    mouseDrag = false;
+    mouse_click_y = 0,
+    last_mouse_y = 0,
+    currently_dragging = false;
   let rows = [];
 
   const init = () => {
-    bindMouse();
-    rows = getRows();
+    createMouseEventListeners();
+    rows = queryForRows();
   };
 
-  const bindMouse = () => {
-    document.addEventListener("mousedown", (event) => {
-      if (event.button != 0) return true;
+  const createMouseEventListeners = () => {
+    document.addEventListener("mousedown", (e) => {
+      if (e.button != 0) return true;
 
-      const target = getTargetRow(event.target);
+      const target = getTargetRow(e.target);
       if (!target) {
         return;
       }
 
-      currRow = target;
+      selected_row = target;
       addDraggableRow(target);
 
-      currRow.classList.add("is-dragging");
+      selected_row.classList.add("is-dragging");
 
-      mouseDownY = event.clientY;
-      mouseDrag = true;
+      mouse_click_y = e.clientY;
+      currently_dragging = true;
     });
 
-    document.addEventListener("mousemove", (event) => {
-      if (!mouseDrag) return;
+    document.addEventListener("mousemove", (e) => {
+      if (!currently_dragging) return;
 
-      mouseY = event.clientY - mouseDownY;
+      last_mouse_y = e.clientY - mouse_click_y;
 
-      moveRow(mouseY);
+      dragRow(last_mouse_y);
     });
 
-    document.addEventListener("mouseup", (event) => {
-      if (!mouseDrag) return;
+    document.addEventListener("mouseup", (_e) => {
+      if (!currently_dragging) return;
 
-      currRow.classList.remove("is-dragging");
+      selected_row.classList.remove("is-dragging");
       table.removeChild(dragElem);
 
       dragElem = null;
-      mouseDrag = false;
-      rows = getRows();
+      currently_dragging = false;
+      rows = queryForRows();
       fixNumberColumn();
     });
   };
 
-  const swapRow = (row, index) => {
-    const currIndex = Array.from(tbody.children).indexOf(currRow),
-      row1 = currIndex > index ? currRow : row,
-      row2 = currIndex > index ? row : currRow;
+  const swapRow = (swap_row, i) => {
+    const selected_index = Array.from(tbody.children).indexOf(selected_row),
+      r1 = selected_index > i ? selected_row : swap_row,
+      r2 = selected_index > i ? swap_row : selected_row;
 
-    tbody.insertBefore(row1, row2);
-    rows = getRows();
+    tbody.insertBefore(r1, r2);
+    rows = queryForRows();
   };
 
-  const moveRow = (y) => {
+  const dragRow = (y) => {
     dragElem.style.transform = "translate3d(0, " + y + "px, 0)";
 
-    const dPos = dragElem.getBoundingClientRect(),
-      currStartY = dPos.y,
-      currEndY = currStartY + dPos.height;
+    const drag_position = dragElem.getBoundingClientRect(),
+      drag_bot = drag_position.y,
+      drag_top = drag_bot + drag_position.height;
 
     for (let i = 0; i < rows.length; i++) {
-      const rowElem = rows[i],
-        rowSize = rowElem.getBoundingClientRect(),
-        rowStartY = rowSize.y,
-        rowEndY = rowStartY + rowSize.height;
+      const el = rows[i],
+        r_position = el.getBoundingClientRect(),
+        r_bot = r_position.y,
+        r_top = r_bot + r_position.height;
 
       if (
-        currRow !== rowElem &&
-        isIntersecting(currStartY, currEndY, rowStartY, rowEndY)
+        linesIntersect(drag_bot, drag_top, r_bot, r_top) &&
+        selected_row !== el
       ) {
-        if (Math.abs(currStartY - rowStartY) < rowSize.height / 2)
-          swapRow(rowElem, i);
+        if (Math.abs(drag_bot - r_bot) < r_position.height / 2) {
+          swapRow(el, i);
+          break;
+        }
       }
     }
   };
@@ -94,33 +96,31 @@ const createDraggableTable = (table_id) => {
   const addDraggableRow = (target) => {
     dragElem = target.cloneNode(true);
     dragElem.classList.add("draggable-table__drag");
-    dragElem.style.height = getStyle(target, "height");
+
+    const cloneStyle = (src, tgt, prop) => {
+      tgt.style[prop] = src.style[prop];
+    };
+
+    cloneStyle(target, dragElem, "height");
+
     for (let i = 0; i < target.children.length; i++) {
       const oldTD = target.children[i],
         newTD = dragElem.children[i];
-      newTD.style.width = getStyle(oldTD, "width");
-      newTD.style.height = getStyle(oldTD, "height");
-      newTD.style.padding = getStyle(oldTD, "padding");
-      newTD.style.margin = getStyle(oldTD, "margin");
+
+      ["width", "height", "padding", "margin"].forEach((style) =>
+        cloneStyle(oldTD, newTD, style)
+      );
     }
 
     table.appendChild(dragElem);
 
-    const tPos = target.getBoundingClientRect(),
-      dPos = dragElem.getBoundingClientRect();
-    dragElem.style.bottom = dPos.y - tPos.y + "px";
+    const target_position = target.getBoundingClientRect(),
+      dragged_position = dragElem.getBoundingClientRect();
+    dragElem.style.bottom = dragged_position.y - target_position.y + "px";
     dragElem.style.left = "-1px";
-
-    document.dispatchEvent(
-      new MouseEvent("mousemove", {
-        view: window,
-        cancelable: true,
-        bubbles: true,
-      })
-    );
   };
 
-  const getRows = () => {
+  const queryForRows = () => {
     return table.querySelectorAll(`table#${table_id} tbody tr:has(td)`);
   };
 
@@ -133,17 +133,10 @@ const createDraggableTable = (table_id) => {
     return target.closest("tr");
   };
 
-  const getStyle = (target, styleName) => {
-    const compStyle = getComputedStyle(target),
-      style = compStyle[styleName];
-
-    return style ? style : null;
-  };
-
-  const isIntersecting = (min0, max0, min1, max1) => {
+  const linesIntersect = (b0, t0, b1, t1) => {
     return (
-      Math.max(min0, max0) >= Math.min(min1, max1) &&
-      Math.min(min0, max0) <= Math.max(min1, max1)
+      Math.max(b0, t0) >= Math.min(b1, t1) &&
+      Math.min(b0, t0) <= Math.max(b1, t1)
     );
   };
 
