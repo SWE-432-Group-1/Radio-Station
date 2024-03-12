@@ -128,10 +128,8 @@ function onSubmit(e){
     const end_time = $("#end_time_box");
     const st_date = start_time.valueAsDate;
     const et_date = end_time.valueAsDate;
-    st_date.setTime(st_date.getTime() + st_date.getTimezoneOffset()*60000);
-    et_date.setTime(et_date.getTime() + et_date.getTimezoneOffset()*60000);
-    const etVal = et_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    const stVal = st_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let stVal = start_time.value;
+    let etVal = end_time.value; 
 
     const DJ = $("#DJ_box"); 
     const DJVal = DJ.value; 
@@ -159,6 +157,12 @@ function onSubmit(e){
         alert("One or more fields of the form are empty."); 
         return; 
     }
+
+    // No empty values, so get the strings. 
+    st_date.setTime(st_date.getTime() + st_date.getTimezoneOffset()*60000);
+    et_date.setTime(et_date.getTime() + et_date.getTimezoneOffset()*60000);
+    etVal = et_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    stVal = st_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
     // Ensure end time is after start time
     if (st_date.getTime() > et_date.getTime()){
