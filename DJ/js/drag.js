@@ -9,7 +9,7 @@ const createDraggableTable = (table_id) => {
   );
 
   let selected_row = null,
-    dragElem = null,
+    dragged_element = null,
     mouse_click_y = 0,
     last_mouse_y = 0,
     currently_dragging = false;
@@ -50,9 +50,9 @@ const createDraggableTable = (table_id) => {
       if (!currently_dragging) return;
 
       selected_row.classList.remove("is-dragging");
-      table.removeChild(dragElem);
+      table.removeChild(dragged_element);
 
-      dragElem = null;
+      dragged_element = null;
       currently_dragging = false;
       rows = queryForRows();
       fixNumberColumn();
@@ -69,9 +69,9 @@ const createDraggableTable = (table_id) => {
   };
 
   const dragRow = (y) => {
-    dragElem.style.transform = "translate3d(0, " + y + "px, 0)";
+    dragged_element.style.transform = "translate3d(0, " + y + "px, 0)";
 
-    const drag_position = dragElem.getBoundingClientRect(),
+    const drag_position = dragged_element.getBoundingClientRect(),
       drag_bot = drag_position.y,
       drag_top = drag_bot + drag_position.height;
 
@@ -94,30 +94,31 @@ const createDraggableTable = (table_id) => {
   };
 
   const addDraggableRow = (target) => {
-    dragElem = target.cloneNode(true);
-    dragElem.classList.add("draggable-table__drag");
+    dragged_element = target.cloneNode(true);
+    dragged_element.classList.add("draggable-table__drag");
 
     const cloneStyle = (src, tgt, prop) => {
       tgt.style[prop] = src.style[prop];
     };
 
-    cloneStyle(target, dragElem, "height");
+    cloneStyle(target, dragged_element, "height");
 
     for (let i = 0; i < target.children.length; i++) {
       const oldTD = target.children[i],
-        newTD = dragElem.children[i];
+        newTD = dragged_element.children[i];
 
       ["width", "height", "padding", "margin"].forEach((style) =>
         cloneStyle(oldTD, newTD, style)
       );
     }
 
-    table.appendChild(dragElem);
+    table.appendChild(dragged_element);
 
     const target_position = target.getBoundingClientRect(),
-      dragged_position = dragElem.getBoundingClientRect();
-    dragElem.style.bottom = dragged_position.y - target_position.y + "px";
-    dragElem.style.left = "-1px";
+      dragged_position = dragged_element.getBoundingClientRect();
+    dragged_element.style.bottom =
+      dragged_position.y - target_position.y + "px";
+    dragged_element.style.left = "-1px";
   };
 
   const queryForRows = () => {
