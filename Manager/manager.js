@@ -17,8 +17,8 @@ function times_sort(){
     // Use the sort function 
     let sorted = rows.sort(function (a, b){
         // Sort by the start times
-        let aVal = a.getElementsByTagName("td")[0].dataset.st; 
-        let bVal = b.getElementsByTagName("td")[0].dataset.st; 
+        let aVal = Number(a.getElementsByTagName("td")[0].dataset.st); 
+        let bVal = Number(b.getElementsByTagName("td")[0].dataset.st); 
         if (aVal > bVal) return 1; 
         else if (bVal > aVal) return -1;
         else return 0; 
