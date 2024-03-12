@@ -3,24 +3,6 @@ function $(selector){
     return document.querySelector(selector); 
 }
 
-function toAMPM(timeStr){
-    const split = timeStr.split(":");
-    const hours = split[0];
-    const mins = split[1];
-    if (hours < 12 && hours > 0){
-        return hours + ":" + mins + " AM";
-    }
-    if (hours > 12){
-        return parseInt(hours) - 12 + ":" + mins + " PM"; 
-    }
-    if (hours == 12){
-        return "12:" + mins + " PM";
-    }
-    if (hours == 0){
-        return "12:" + mins + " AM"; 
-    }
-}
-
 // Sorts the rows in the times table based on time value. 
 function times_sort(){
     const tb = $("#times_table tbody");
@@ -51,7 +33,8 @@ function times_sort(){
 function date_changed(e){
     // Get the new date value
     const date_box = $("#date_box");
-    let value = date_box.valueAsDate; 
+    let value = date_box.valueAsDate;
+    value.setTime(value.getTime() + value.getTimezoneOffset()*60000);
     
     // Update the article titles. 
     $("#times_title").innerText = "Bookings: " + value.toDateString();
@@ -143,10 +126,13 @@ function onSubmit(e){
     */
     const start_time = $("#start_time_box"); 
     const end_time = $("#end_time_box");
-    const stVal = start_time.value;
     const st_date = start_time.valueAsDate;
-    const etVal = end_time.value;
-    const et_date = end_time.valueAsDate; 
+    const et_date = end_time.valueAsDate;
+    st_date.setTime(st_date.getTime() + st_date.getTimezoneOffset()*60000);
+    et_date.setTime(et_date.getTime() + et_date.getTimezoneOffset()*60000);
+    const etVal = et_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const stVal = st_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
     const DJ = $("#DJ_box"); 
     const DJVal = DJ.value; 
 
@@ -219,7 +205,7 @@ function onSubmit(e){
     const td2 = document.createElement("td"); 
     const btn = document.createElement("button");
     const btn2 = document.createElement("button"); 
-    const time_text_string = " " + toAMPM(stVal) + " to " + toAMPM(etVal);
+    const time_text_string = " " + stVal + " to " + etVal;
     const time_text = document.createTextNode(time_text_string); 
     const DJ_text = document.createTextNode(DJVal); 
         // Delete Button
@@ -255,8 +241,9 @@ function main(){
     const date_box = $("#date_box"); 
     date_box.addEventListener("change", date_changed); 
     
-    // Set today as the default date. 
-    date_box.valueAsDate = new Date();
+    // Set today as the default date.
+    const date = new Date(); 
+    date_box.valueAsDate = new Date(date.getTime() - date.getTimezoneOffset()*60000);
     date_changed(); 
     
     // Form validation event 
