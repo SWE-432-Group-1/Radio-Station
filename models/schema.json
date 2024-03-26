@@ -1,0 +1,101 @@
+[
+  {
+    "name": "timeslots",
+    "bsonType": "object",
+    "required": ["start", "end", "booked_by"],
+    "properties": {
+      "start": {
+        "bsonType": "date",
+        "description": "Start time of the timeslot"
+      },
+      "end": {
+        "bsonType": "date",
+        "description": "End time of the timeslot"
+      },
+      "booked_by": {
+        "bsonType": "objectId",
+        "description": "User who booked the timeslot"
+      }
+    }
+  },
+  {
+    "name": "djs",
+    "bsonType": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name of the DJ"
+      }
+    }
+  },
+  {
+    "name": "songs",
+    "bsonType": "object",
+    "required": ["title", "artist", "album", "genre", "duration"],
+    "properties": {
+      "title": {
+        "bsonType": "string",
+        "description": "Title of the song"
+      },
+      "artist": {
+        "bsonType": "string",
+        "description": "Artist of the song"
+      },
+      "album": {
+        "bsonType": "string",
+        "description": "Album of the song"
+      },
+      "genre": {
+        "bsonType": "string",
+        "description": "Genre of the song"
+      },
+      "duration": {
+        "bsonType": "int",
+        "minimum": 0,
+        "description": "Duration of the song in seconds"
+      }
+    }
+  },
+  {
+    "name": "playlists",
+    "bsonType": "object",
+    "required": ["name", "djs"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name of the playlist"
+      },
+      "type": {
+        "bsonType": "string",
+        "description": "Whether producer's or DJ's playlist"
+      },
+      "dj": {
+        "bsonType": "objectId",
+        "description": "Original owner of this playlist"
+      },
+      "songs": {
+        "bsonType": "array",
+        "description": "List of IDs for songs in the playlist",
+        "items": {
+          "bsonType": "objectId"
+        }
+      }
+    }
+  },
+  {
+    "name": "timeslot_playlists",
+    "bsonType": "object",
+    "required": ["timeslot", "playlist"],
+    "properties": {
+      "timeslot": {
+        "bsonType": "objectId",
+        "description": "Timeslot for which the playlist is scheduled"
+      },
+      "playlist": {
+        "bsonType": "objectId",
+        "description": "Playlist to be played during the timeslot"
+      }
+    }
+  }
+]
