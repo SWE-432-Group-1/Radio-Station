@@ -24,6 +24,11 @@ app.get("/", (_req, res) => {
   res.sendFile(join(__dirname, "views/Home/index.html"));
 });
 
+// Ejs for Producer
+app.get("/Prod", (_req, res) => {
+  res.render(join(__dirname, "views/partials/Producer/pages/index"));
+});
+
 const LISTEN_PORT = process.env.RADIO_STATION_LISTEN_PORT || 8080;
 app.listen(LISTEN_PORT, () => {
   console.log(`Server is running on port ${LISTEN_PORT}`);

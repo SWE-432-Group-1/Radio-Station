@@ -1,0 +1,54 @@
+<main class="container">
+    <nav class="nav-bar">
+        <div><img id="web-logo" src="./static/Producer/images/logo.png"></div>
+        <div onclick="alert('Functionality not available at the moment!')" id="user"
+            style="border-radius: 50%; width: 70px; height: 70px;">User</div>
+    </nav>
+    <article class="body">
+        <div class="calendar">
+            <div id="events"></div>
+            <div id="calendar-body"></div>
+            <div style="text-align: center;">
+                < February 2024>
+            </div>
+        </div>
+        <div class="song-list">
+            <div id="song-search">
+                <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 0.8em; border-radius: 5px;">
+                    <div style="padding: 0.5em;">
+                        <input id="song" type="text" name="song" placeholder="Search song" style="width: 450px">
+                        <select name="djs" id="djs">
+                            <option value="default">Select DJ</option>
+                        </select>
+                    </div>
+                    <table id="song-names"></table>
+                </form>
+            </div>
+        </div>
+    </article>
+    <article class="body">
+        <div class="dj-list">
+            <div id="dj-search">
+                <form name="dj-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div style="padding: 1em;">
+                        <input id="dj" type="text" name="dj" placeholder="Search DJ" style="width: 367px;">
+                        <button type="button" onclick="djSearch()">Search</button>
+                    </div>
+                    <table id="dj-names"></table>
+                </form>
+            </div>
+        </div>
+        <div class="pod-list">
+            <div id="pod-search">
+                <form name="pod-form"
+                    style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div style="padding: 1em;">
+                        <input id="pod" type="text" name="pod" placeholder="Search Podcast" style="width: 470px;">
+                        <button type="button" onclick="podSearch()">Search</button>
+                    </div>
+                    <table id="pods"></table>
+                </form>
+            </div>
+        </div>
+    </article>
+</main>
