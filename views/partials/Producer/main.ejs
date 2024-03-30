@@ -7,9 +7,15 @@
     <article class="body">
         <div class="calendar">
             <div id="events"></div>
-            <div id="calendar-body"></div>
+            <div id="calendar-body">
+                <% days.forEach((d)=> { %>
+                    <div>
+                        <%= d %>
+                    </div>
+                <% }) %>
+            </div>
             <div style="text-align: center;">
-                < February 2024>
+                < February 2024 >
             </div>
         </div>
         <div class="song-list">
@@ -21,7 +27,18 @@
                             <option value="default">Select DJ</option>
                         </select>
                     </div>
-                    <table id="song-names"></table>
+                    <table id="song-names">
+                        <% songs.forEach((s)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= s.name %>
+                                </td>
+                                <td>
+                                    <strong>Artist</strong>: <%= s.artist %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
                 </form>
             </div>
         </div>
@@ -40,13 +57,26 @@
         </div>
         <div class="pod-list">
             <div id="pod-search">
-                <form name="pod-form"
-                    style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                <form name="pod-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
                     <div style="padding: 1em;">
                         <input id="pod" type="text" name="pod" placeholder="Search Podcast" style="width: 470px;">
                         <button type="button" onclick="podSearch()">Search</button>
                     </div>
-                    <table id="pods"></table>
+                    <table id="pods">
+                        <% podcasts.forEach((p)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= p.name %>
+                                </td>
+                                <td>
+                                    <strong>Episode</strong>: <%= p.episode %>
+                                </td>
+                                <td>
+                                    <strong>Duration</strong>: <%= p.duration %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
                 </form>
             </div>
         </div>

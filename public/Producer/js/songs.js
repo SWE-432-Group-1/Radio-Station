@@ -9,9 +9,9 @@ var djNamesList = [];
 // function to book a dj
 function bookDJ(djName, djAvailability) {
     let num = 0;
-    for(let dj of djNamesList) {
-        num+=1;
-        if(dj === djName) {
+    for (let dj of djNamesList) {
+        num += 1;
+        if (dj === djName) {
             const doc = document.createElement('option');
             doc.value = `dj${num}`;
             doc.textContent = dj;
@@ -31,9 +31,9 @@ function djList() {
         { name: "Jack Smith", experience: "10 yrs", availability: "Thu 7am - 7pm" },
     ];
 
-    for(let d of djs) {
+    for (let d of djs) {
         const person = new DJ(d.name, d.experience, d.availability);
-        const doc = document.createElement('div');
+        const doc = document.createElement('tr');
         const button = document.createElement('td');
         const djName = document.createElement('td');
         const djExperience = document.createElement('td');
@@ -42,7 +42,7 @@ function djList() {
         djExperience.innerHTML = `<strong>Experience</strong>: ${person.experience}`;
         djAvailability.innerHTML = `<strong>Availability</strong>: ${person.availability}`;
         djNamesList.push(person.name);
-        button.onclick = function() { bookDJ(person.name, person.availability) };
+        button.onclick = function () { bookDJ(person.name, person.availability) };
         button.textContent = "Book";
         doc.appendChild(djName);
         doc.appendChild(djExperience);
@@ -55,19 +55,19 @@ function djList() {
 // list of songs for a dj
 function songsListDJ1() {
     const songs = [
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
-        { name: 'Sample', artist: 'N/A' },
+        { name: 'Valor', artist: 'scRem' },
+        { name: 'Pearl', artist: 'Jonna' },
+        { name: "Good ol' days", artist: 'Ollie Wood' },
+        { name: 'Easy out', artist: 'Jack Man' },
+        { name: 'Lost', artist: 'Paralysis' },
+        { name: 'Hands Down', artist: 'G.O.A.T' },
+        { name: 'Chime in', artist: 'Kelly Rose' },
+        { name: 'Peace', artist: 'Z' },
+        { name: 'Journey', artist: 'Grace Holt' },
     ];
-    
+
     for (let s of songs) {
-        const doc = document.createElement('div');
+        const doc = document.createElement('tr');
         const name = document.createElement('td');
         const artist = document.createElement('td');
         name.innerHTML = `<strong>Name</strong>: ${s.name}`;
@@ -81,19 +81,19 @@ function songsListDJ1() {
 // list of songs for a dj
 function songsListDJ2() {
     const songs = [
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
-        { name: 'N/A', artist: 'N/A' },
+        { name: 'Good vibes', artist: 'Heaven' },
+        { name: 'Chained', artist: 'Past' },
+        { name: 'Beyond Reason', artist: 'Maggie C.' },
+        { name: 'Denial', artist: 'toxic' },
+        { name: 'Grove and Move', artist: 'AJ' },
+        { name: 'Jokes on YOU', artist: 'mANIAC' },
+        { name: 'Despair and Darkness', artist: 'hopeless' },
+        { name: 'Time of your life', artist: 'Blank' },
+        { name: 'Free of Charge', artist: '$oney' },
     ];
 
     for (let s of songs) {
-        const doc = document.createElement('div');
+        const doc = document.createElement('tr');
         const name = document.createElement('td');
         const artist = document.createElement('td');
         name.innerHTML = `<strong>Name</strong>: ${s.name}`;
@@ -107,19 +107,19 @@ function songsListDJ2() {
 // a default list of songs for dj
 function defaultList() {
     const songs = [
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
-        { name: 'Placeholder', artist: 'N/A' },
+        { name: 'Vibin', artist: 'Joe Smith' },
+        { name: 'Back to back', artist: 'Jim Jones' },
+        { name: 'Ghosted', artist: 'Polly Grace' },
+        { name: 'Golden Dust', artist: 'Shiny' },
+        { name: 'Whispers', artist: 'Paranoia' },
+        { name: 'Our Galaxy', artist: 'Cosmos' },
+        { name: 'Dreamy', artist: 'Andy A.' },
+        { name: 'Vast Landscape', artist: 'Hustler' },
+        { name: 'Night thoughts', artist: 'Y' },
     ];
 
     for (let s of songs) {
-        const doc = document.createElement('div');
+        const doc = document.createElement('tr');
         const name = document.createElement('td');
         const artist = document.createElement('td');
         name.innerHTML = `<strong>Name</strong>: ${s.name}`;
@@ -131,7 +131,7 @@ function defaultList() {
 }
 
 // logic for list of songs
-document.querySelector("#djs").addEventListener("change",function() {
+document.querySelector("#djs").addEventListener("change", function () {
     let dj = this.value;
     if (dj === "dj1") {
         document.querySelector('#song-names').innerHTML = "";
@@ -141,11 +141,15 @@ document.querySelector("#djs").addEventListener("change",function() {
         document.querySelector('#song-names').innerHTML = "";
         songsListDJ2();
     }
-    else if (dj != "dj1" && dj != "dj2") {
+    else {
         document.querySelector('#song-names').innerHTML = "";
         defaultList();
     }
+    // else if (dj != "dj1" && dj != "dj2") {
+    //     document.querySelector('#song-names').innerHTML = "";
+    //     defaultList();
+    // }
 });
 // call function
-defaultList();
+// defaultList();
 djList();

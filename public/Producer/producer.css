@@ -37,10 +37,10 @@ button:hover {
     cursor: pointer;
 }
 
-#dj-names div {
+#dj-names tr {
     display: grid;
     box-shadow: 1px 1px 1px 1px #7D53DE;
-    padding: 0.34em;
+    padding: 0.33em;
     border-radius: 5px;
     grid-template-columns: 150px 150px 150px;
 }
@@ -100,8 +100,8 @@ button:hover {
     background-color: #D1F5FF;
     display: flex;
     margin: 1px;
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     align-items: center;
     border: 0.1px solid black;
     justify-content: center;
@@ -110,8 +110,8 @@ button:hover {
 
 #calendar-body div:nth-child(n+1) {
     display: flex;
-    height: 35px;
-    width: 35px;
+    height: 40px;
+    width: 40px;
     justify-content: center;
     border-radius: 50%;
     align-items: center;
@@ -133,7 +133,7 @@ button:hover {
     cursor: pointer;
 }
 
-#pods div {
+#pods tr {
     display: grid;
     grid-template-columns: 220px 160px 160px;
     box-shadow: 1px 1px 1px 1px #7D53DE;
@@ -141,7 +141,7 @@ button:hover {
     border-radius: 5px;
 }
 
-#song-names div {
+#song-names tr {
     display: grid;
     grid-template-columns: 400px 140px;
     border-radius: 5px;
