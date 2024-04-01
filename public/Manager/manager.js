@@ -29,14 +29,7 @@ async function date_changed(e){
 async function minus_btn(e){
     const idx = e.target.dataset.idx; 
     // Pass this to the back end
-    const resp = await fetch("/manager/table/delete", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // Set content type to JSON
-        },
-        body: JSON.stringify({idx: idx})
-    });
-
+    const resp = await fetch("/manager/table/delete/" + idx);
     if (resp.ok){
         location.reload(); 
     }
@@ -55,14 +48,7 @@ async function onUndo(){
 async function getReport(e){
     const idx = e.target.dataset.idx; 
     // Pass this to the back end
-    const resp = await fetch("/manager/report", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // Set content type to JSON
-        },
-        body: JSON.stringify({idx: idx})
-    });
-
+    const resp = await fetch("/manager/report/" + idx);
     if (resp.ok){
         location.reload(); 
     } 

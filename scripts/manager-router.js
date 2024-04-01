@@ -122,9 +122,9 @@ const handleForm = (app) => {
 }
 
 const handleTableDelete = (app) => {
-  app.post("/manager/table/delete", (req, res) => {
+  app.get("/manager/table/delete/:idx", (req, res) => {
     // Get the index 
-    const idx = req.body.idx; 
+    const idx = req.params.idx; 
     // Remove the slot from the list and add it to UNDO
     UNDO.push(time_slots[idx]); 
     time_slots.splice(idx, 1); 
@@ -147,8 +147,8 @@ const handleTableUndo = (app) => {
 }
 
 const handleReport = (app) => {
-  app.post("/manager/report", (req, res) => {
-    const idx = req.body.idx; 
+  app.get("/manager/report/:idx", (req, res) => {
+    const idx = req.params.idx; 
 
     // Mock Data
     report = []; 
@@ -186,7 +186,7 @@ export default {
  
 function getDateFromTime(time){
   let timeSplit = time.split(":");
-  let d = new Date();
+  let d = new Date(selectedDay); 
   d.setHours(timeSplit[0]);
   d.setMinutes(timeSplit[1]);
   d.setSeconds(0);
