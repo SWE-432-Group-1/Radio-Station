@@ -13,64 +13,6 @@
     <footer>
         <%- include('../footer'); %>
     </footer>
-
-    <script src="./static/Producer/js/songs.js"></script>
-    <script src="./static/Producer/js/podcast.js"></script>
-    <script src="./static/Producer/js/calendar.js"></script>
-
-    <script>
-        var eventsList = [];
-
-        // adds new events from calendar
-        document.querySelectorAll('#calendar-body div:nth-child(n+8)').forEach((e) => {
-            e.addEventListener('click', function () {
-                const name = prompt('Event Name:');
-                if (!name)
-                    // no event name was given
-                    alert('No event name was provided!');
-                if (eventsList.length >= 7)
-                    // events exceeds the limit
-                    alert('Too many events have been added!');
-                if (name && eventsList.length < 7) {
-                    // only 7 events can be added for now
-                    eventsList.push(name);
-                    document.querySelector('#events').innerHTML = "";
-                    printEvents();
-                    alert(`Event "${name}" added to events!`);
-                }
-            });
-        });
-
-        // display events
-        function printEvents() {
-            for (let e of eventsList) {
-                const doc = document.createElement('div');
-                doc.style.boxShadow = "1px 1px 1px 1px #7D53DE";
-                doc.style.borderRadius = "2px";
-                doc.style.padding = "0.4em";
-                doc.style.textAlign = "center";
-                doc.innerHTML = e;
-                document.querySelector('#events').appendChild(doc);
-            }
-        }
-
-        // function for podcast search bar
-        function podSearch() {
-            if (!document.forms['pod-form']['pod'].value)
-                alert('Must enter something to search!');
-            else
-                alert('Funtionality not available at the moment!');
-        }
-
-        // function for dj search bar
-        function djSearch() {
-            if (!document.forms['dj-form']['dj'].value)
-                alert('Must enter something to search!');
-            else
-                alert('Funtionality not available at the moment!');
-        }
-    </script>
-
 </body>
 
 </html>

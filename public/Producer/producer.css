@@ -165,6 +165,26 @@ button:hover {
     column-gap: 15px;
 }
 
+#events div {
+    border: solid 0.5px #7D53DE;
+    box-shadow: 1px 1px #7D53DE;
+    border-radius: 2px;
+    padding: 1px;
+    font-size: 12px;
+    text-align: center;
+}
+
+#events div:hover {
+    background-color: #42c4e4;
+    box-shadow: 1px 1px 1px 1px #7D53DE;
+    cursor: pointer;
+}
+
+#events div:active {
+    background-color: #7D53DE;
+    transform: translateY(1px);
+}
+
 .footer {
     display: flex;
     column-gap: 530px;

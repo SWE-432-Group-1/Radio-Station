@@ -1,14 +1,14 @@
 <main class="container">
     <nav class="nav-bar">
         <div><img id="web-logo" src="./static/Producer/images/logo.png"></div>
-        <div onclick="alert('Functionality not available at the moment!')" id="user"
+        <div onclick="<%=userHandler%>" id="user"
             style="border-radius: 50%; width: 70px; height: 70px;">User</div>
     </nav>
     <article class="body">
         <div class="calendar">
             <div id="events"></div>
             <div id="calendar-body">
-                <% days.forEach((d)=> { %>
+                <% days.forEach((d) => { %>
                     <div>
                         <%= d %>
                     </div>
@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <table id="song-names">
-                        <% songs.forEach((s)=> { %>
+                        <% songs.forEach((s) => { %>
                             <tr>
                                 <td>
                                     <strong>Name</strong>: <%= s.name %>
@@ -49,7 +49,7 @@
                 <form name="dj-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
                     <div style="padding: 1em;">
                         <input id="dj" type="text" name="dj" placeholder="Search DJ" style="width: 367px;">
-                        <button type="button" onclick="djSearch()">Search</button>
+                        <button type="button" onclick="<%=djHandler%>">Search</button>
                     </div>
                     <table id="dj-names"></table>
                 </form>
@@ -60,10 +60,10 @@
                 <form name="pod-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
                     <div style="padding: 1em;">
                         <input id="pod" type="text" name="pod" placeholder="Search Podcast" style="width: 470px;">
-                        <button type="button" onclick="podSearch()">Search</button>
+                        <button type="button" onclick="<%=podHandler%>"">Search</button>
                     </div>
                     <table id="pods">
-                        <% podcasts.forEach((p)=> { %>
+                        <% podcasts.forEach((p) => { %>
                             <tr>
                                 <td>
                                     <strong>Name</strong>: <%= p.name %>
@@ -82,3 +82,208 @@
         </div>
     </article>
 </main>
+
+<script>
+    var eventsList = [];
+
+    // adds new events from calendar
+    document.querySelectorAll('#calendar-body div:nth-child(n+8)').forEach((e) => {
+        e.addEventListener('click', function () {
+            const name = prompt('Event Name:');
+            if (!name)
+                // no event name was given
+                alert('No event name was provided!');
+            if (eventsList.length >= 7)
+                // events exceeds the limit
+                alert('Too many events have been added!');
+            if (name && eventsList.length < 7) {
+                // only 7 events can be added for now
+                eventsList.push({ event: name, date: e.innerText} );
+                document.querySelector('#events').innerHTML = "";
+                printEvents();
+                alert(`Event "${name}" added to events!`);
+            }
+        });
+    });
+
+    // display events
+    function printEvents() {
+        for (let e of eventsList) {
+            const doc = document.createElement('div');
+            doc.innerHTML = e.event;
+            doc.onclick = function() { alert(`You have a ${e.event} on February ${e.date}, 2024`) };
+            document.querySelector('#events').appendChild(doc);
+        }
+    }
+
+    // function for user profile
+    function user() {
+        alert('Functionality not available at the moment!');
+    }
+
+    // function for podcast search bar
+    function podSearch() {
+        if (!document.forms['pod-form']['pod'].value)
+            alert('Must enter something to search!');
+        else
+            alert('Funtionality not available at the moment!');
+    }
+
+    // function for dj search bar
+    function djSearch() {
+        if (!document.forms['dj-form']['dj'].value)
+            alert('Must enter something to search!');
+        else
+            alert('Funtionality not available at the moment!');
+    }
+
+    function DJ(name, experience, availability) {
+        this.name = name;
+        this.experience = experience;
+        this.availability = availability;
+    }
+
+    var djNamesList = [];
+
+    // function to book a dj
+    function bookDJ(djName, djAvailability) {
+        let num = 0;
+        for (let dj of djNamesList) {
+            num += 1;
+            if (dj === djName) {
+                const doc = document.createElement('option');
+                doc.value = `dj${num}`;
+                doc.textContent = dj;
+                document.querySelector("#djs").appendChild(doc);
+                alert(`${dj} has been booked on ${djAvailability}!`);
+            }
+        }
+    }
+
+    // list of djs that can be booked
+    function djList() {
+        const djs = [
+            { name: "John Smith", experience: "7 yrs", availability: "Mon 8am - 5pm" },
+            { name: "John Doe", experience: "2 yrs", availability: "Fri 10am - 3pm" },
+            { name: "Jane Doe", experience: "1 yrs", availability: "Wed 11am - 2pm" },
+            { name: "Joe Joe", experience: "0 yrs", availability: "Tue 10am - 12pm" },
+            { name: "Jack Smith", experience: "10 yrs", availability: "Thu 7am - 7pm" },
+        ];
+        for (let d of djs) {
+            const person = new DJ(d.name, d.experience, d.availability);
+            const doc = document.createElement('tr');
+            const button = document.createElement('td');
+            const djName = document.createElement('td');
+            const djExperience = document.createElement('td');
+            const djAvailability = document.createElement('td');
+            djName.innerHTML = `<strong>Name</strong>: ${person.name}`;
+            djExperience.innerHTML = `<strong>Experience</strong>: ${person.experience}`;
+            djAvailability.innerHTML = `<strong>Availability</strong>: ${person.availability}`;
+            djNamesList.push(person.name);
+            button.onclick = function () { bookDJ(person.name, person.availability) };
+            button.textContent = "Book";
+            doc.appendChild(djName);
+            doc.appendChild(djExperience);
+            doc.appendChild(djAvailability);
+            doc.appendChild(button);
+            document.querySelector("#dj-names").appendChild(doc);
+        }
+    }
+
+    // list of songs for a dj
+    function songsListDJ1() {
+        const songs = [
+            { name: 'Valor', artist: 'scRem' },
+            { name: 'Pearl', artist: 'Jonna' },
+            { name: "Good ol' days", artist: 'Ollie Wood' },
+            { name: 'Easy out', artist: 'Jack Man' },
+            { name: 'Lost', artist: 'Paralysis' },
+            { name: 'Hands Down', artist: 'G.O.A.T' },
+            { name: 'Chime in', artist: 'Kelly Rose' },
+            { name: 'Peace', artist: 'Z' },
+            { name: 'Journey', artist: 'Grace Holt' },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // list of songs for a dj
+    function songsListDJ2() {
+        const songs = [
+            { name: 'Good vibes', artist: 'Heaven' },
+            { name: 'Chained', artist: 'Past' },
+            { name: 'Beyond Reason', artist: 'Maggie C.' },
+            { name: 'Denial', artist: 'toxic' },
+            { name: 'Grove and Move', artist: 'AJ' },
+            { name: 'Jokes on YOU', artist: 'mANIAC' },
+            { name: 'Despair and Darkness', artist: 'hopeless' },
+            { name: 'Time of your life', artist: 'Blank' },
+            { name: 'Free of Charge', artist: '$oney' },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // a default list of songs for dj
+    function defaultList() {
+        const songs = [
+            { name: 'Vibin', artist: 'Joe Smith' },
+            { name: 'Back to back', artist: 'Jim Jones' },
+            { name: 'Ghosted', artist: 'Polly Grace' },
+            { name: 'Golden Dust', artist: 'Shiny' },
+            { name: 'Whispers', artist: 'Paranoia' },
+            { name: 'Our Galaxy', artist: 'Cosmos' },
+            { name: 'Dreamy', artist: 'Andy A.' },
+            { name: 'Vast Landscape', artist: 'Hustler' },
+            { name: 'Night thoughts', artist: 'Y' },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // logic for list of songs
+    document.querySelector("#djs").addEventListener("change", function () {
+        let dj = this.value;
+        if (dj === "dj1") {
+            document.querySelector('#song-names').innerHTML = "";
+            songsListDJ1();
+        }
+        else if (dj === "dj2") {
+            document.querySelector('#song-names').innerHTML = "";
+            songsListDJ2();
+        }
+        else {
+            document.querySelector('#song-names').innerHTML = "";
+            defaultList();
+        }
+    });
+    
+    djList();
+</script>
