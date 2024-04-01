@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    
+    <%- include("./partials/head"); %>
+
+    <body>
+    <main class="container">
+        
+        <nav class="navbar">
+            <img id="logo" src="./static/Manager/imgs/logo.png">
+            <button id="btnUser">User</button>
+        </nav>
+    
+        <article class="calendar">
+            <label>Date</label>
+            <input id="date_box" type="date" name="selected_date" value="<%= dateValue %>">
+        </article>
+    
+        <article class="time_slots">
+            <form id="times_form" method="POST" action="/manager/form">
+                <button type="submit" id="form_submit">+</button>
+                <label>Time:</label>
+                
+                <input id="start_time_box" type="time" name="start_time"> to
+                <input id="end_time_box" type="time" name="end_time"> 
+                
+                <label>DJ:</label>
+                <input id="DJ_box" type="text" name="DJ">
+                
+                <br>
+                <button type="button" id="btnUndo" onclick="onUndo()">Undo</button>
+            </form>
+            
+            <table id="times_table">
+                <thead>
+                    <tr>
+                        <th colspan="2" id="times_title">Bookings: <%= dateString %></th>
+                    </tr>
+                    <tr>
+                        <th>Time Slots</th>
+                        <th>DJs</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                    <% for( let index = 0; index < time_slots.length; index++ ) { %>
+                        <tr>
+                            <td>
+                                <button onclick="minus_btn(event)" data-idx = "<%= index %>">-</button>
+                                <%= time_slots[index].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+                                     + " to " + time_slots[index].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                            </td>
+                            <td>
+                                <button onclick="getReport(event)" 
+                                    data-idx = "<%= index %>" 
+                                    style="padding: 0.5em; margin-right: 2em;">Report</button>
+                                <%= time_slots[index].dj %> 
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </article>
+    
+        <article class="report">
+            <table id="report_table">
+                <thead>
+                    <tr>
+                        <th colspan="2" id="report_title"><%= reportTitle %></th>
+                    </tr>
+                    <tr>
+                        <th>Producer Assigned Songs</th>
+                        <th>DJ Played Songs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for( let index = 0; index < report.length; index++ ) { %>
+                        <tr>
+                            <td><%= report[index].prod %></td>
+                            <td><%= report[index].dj %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </article>
+    
+        <article class="producer_notes">
+            <h3>Producer's Notes: <%= dateString %></h3>
+            <ul id="notes_list">
+                <% for( let index = 0; index < prodNotes.length; index++ ) { %>
+                    <li><%= prodNotes[index].dj + ": " + prodNotes[index].desc %></li>
+                <% } %>
+            </ul>
+        </article>
+    
+        <%- include("./partials/footer"); %>
+
+        <% if (overlap) { %>
+            <script>
+                const start_time = $("#start_time_box"); 
+                const end_time = $("#end_time_box");
+                start_time.style.border = "2px solid red";
+                end_time.style.border = "2px solid red";
+                alert("Time slot overlaps with a booked one.")
+            </script>
+        <% } %>
+
+        <% if (!validDJ) { %>
+            <script>
+                const DJ_Box = $("#DJ_box");
+                DJ_Box.style.border = "2px solid red";
+                alert("Not a valid DJ name.");                 
+            </script>
+        <% } %>
+    
+    </main>
+    </body>
+</html>

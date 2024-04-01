@@ -4,6 +4,7 @@ import producerRouter from "./scripts/producer-router.js";
 import djRouter from "./scripts/dj-router.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import bodyParser from 'body-parser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,6 +17,12 @@ app.set("view engine", "ejs");
 // Serve static files from the public directory. 
 app.use('/static', express.static(join(__dirname, "public")));
 
+// Used to get data from ejs. 
+app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Handle all of the routing. 
 managerRouter.handleAll(app);
 producerRouter.handleAll(app);
 djRouter.handleAll(app);
