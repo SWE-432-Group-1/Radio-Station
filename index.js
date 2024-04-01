@@ -52,7 +52,7 @@ app.get("/Prod", (_req, res) => {
     { name: 'Vast Landscape', artist: 'Hustler' },
     { name: 'Night thoughts', artist: 'Y' },
   ]
-  res.render(join(__dirname, "views/partials/Producer/pages/index"), { days: days, podcasts: podcasts, songs: songs });
+  res.render(join(__dirname, "views/partials/Producer/pages/index"), { days: days, podcasts: podcasts, songs: songs, podHandler: "podSearch();", djHandler: "djSearch();", userHandler: "user();" });
 });
 
 const LISTEN_PORT = process.env.RADIO_STATION_LISTEN_PORT || 8080;
