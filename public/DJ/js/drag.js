@@ -20,6 +20,66 @@ const createDraggableTable = (table_id) => {
     rows = queryForRows();
   };
 
+  const saveResults = () => {
+    const timeslotId = getCurrentTimeslotId();
+
+    if (!timeslotId) {
+      console.error(
+        "Failed to get current timeslot ID while saving playlist order"
+      );
+      return;
+    }
+
+    const data = Array.from(rows)
+      .map((row) => {
+        const rowIdRaw = row.id;
+        const rowIdSplit = rowIdRaw.split("_row_");
+        if (rowIdSplit.length !== 2) {
+          console.error("Failed to split row ID", row, rowIdRaw, rowIdSplit);
+          return null;
+        }
+        const rowId = rowIdSplit[1];
+        const rowNum = parseInt(rowId);
+
+        if (isNaN(rowNum)) {
+          console.error(
+            "Failed to parse row number",
+            row,
+            rowIdRaw,
+            rowIdSplit,
+            rowId,
+            rowNum
+          );
+          return null;
+        }
+
+        return rowNum;
+      })
+      .filter((row) => row !== null);
+
+    if (data.length !== rows.length) {
+      console.error("Failed to save playlist order", data, rows);
+      return;
+    }
+
+    fetch(`/dj/api/playlist_order/${timeslotId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Response was not OK");
+        }
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Failed to save playlist order", error);
+      });
+  };
+
   const createMouseEventListeners = () => {
     document.addEventListener("mousedown", (e) => {
       if (e.button != 0) return true;
@@ -56,6 +116,7 @@ const createDraggableTable = (table_id) => {
       currently_dragging = false;
       rows = queryForRows();
       fixNumberColumn();
+      saveResults();
     });
   };
 

@@ -170,6 +170,7 @@ const playlistRows = [
 
 const timeslotList = [
   {
+    id: 1,
     date: "1969-01-01",
     start_time: "10:00",
     end_time: "11:00",
@@ -180,6 +181,7 @@ const timeslotList = [
     selected: true,
   },
   {
+    id: 2,
     date: "1969-01-01",
     start_time: "11:00",
     end_time: "12:00",
@@ -190,6 +192,7 @@ const timeslotList = [
     selected: false,
   },
   {
+    id: 3,
     date: "1969-01-01",
     start_time: "12:00",
     end_time: "13:00",
@@ -200,6 +203,7 @@ const timeslotList = [
     selected: false,
   },
   {
+    id: 4,
     date: "1969-01-01",
     start_time: "13:00",
     end_time: "14:00",
@@ -210,6 +214,7 @@ const timeslotList = [
     selected: false,
   },
   {
+    id: 5,
     date: "1969-01-01",
     start_time: "14:00",
     end_time: "15:00",
