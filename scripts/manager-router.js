@@ -55,7 +55,11 @@ const handleDefault = (app) => {
       reportTitle: reportTitle, 
 
       prodNotes: prodNotes,
-    }); 
+    });
+    
+    // Reset variables. 
+    overlap = false; 
+    validDJ = true; 
 
   });
 }
