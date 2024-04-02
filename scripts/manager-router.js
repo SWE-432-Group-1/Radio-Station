@@ -39,7 +39,7 @@ const handleDefault = (app) => {
     // Default to today if no value
     if (selectedDay == null){
       const date = new Date();
-      selectedDay = new Date(date.getTime() + date.getTimezoneOffset()*60000);
+      selectedDay = new Date(date.getTime() - date.getTimezoneOffset()*60000);
     }
     dateValue = selectedDay.toISOString().split('T')[0];
     dateString = selectedDay.toDateString(); 
