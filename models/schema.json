@@ -2,7 +2,7 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start", "end", "booked_by"],
+    "required": ["start", "end"],
     "properties": {
       "start": {
         "bsonType": "date",
@@ -11,10 +11,6 @@
       "end": {
         "bsonType": "date",
         "description": "End time of the timeslot"
-      },
-      "booked_by": {
-        "bsonType": "objectId",
-        "description": "User who booked the timeslot"
       }
     }
   },
@@ -32,7 +28,7 @@
   {
     "name": "songs",
     "bsonType": "object",
-    "required": ["title", "artist", "album", "genre", "duration"],
+    "required": ["title", "artist"],
     "properties": {
       "title": {
         "bsonType": "string",
@@ -41,19 +37,6 @@
       "artist": {
         "bsonType": "string",
         "description": "Artist of the song"
-      },
-      "album": {
-        "bsonType": "string",
-        "description": "Album of the song"
-      },
-      "genre": {
-        "bsonType": "string",
-        "description": "Genre of the song"
-      },
-      "duration": {
-        "bsonType": "int",
-        "minimum": 0,
-        "description": "Duration of the song in seconds"
       }
     }
   },
@@ -66,10 +49,6 @@
         "bsonType": "string",
         "description": "Name of the playlist"
       },
-      "type": {
-        "bsonType": "string",
-        "description": "Whether producer's or DJ's playlist"
-      },
       "dj": {
         "bsonType": "objectId",
         "description": "Original owner of this playlist"
@@ -78,7 +57,18 @@
         "bsonType": "array",
         "description": "List of IDs for songs in the playlist",
         "items": {
-          "bsonType": "objectId"
+          "bsonType": "object",
+          "required": ["song", "producer_created"],
+          "properties": {
+            "song": {
+              "bsonType": "objectId",
+              "description": "ID of the song"
+            },
+            "producer_created": {
+              "bsonType": "bool",
+              "description": "Whether the producer created this song"
+            }
+          }
         }
       }
     }
@@ -90,7 +80,8 @@
     "properties": {
       "timeslot": {
         "bsonType": "objectId",
-        "description": "Timeslot for which the playlist is scheduled"
+        "description": "Timeslot for which the playlist is scheduled",
+        "unique": true
       },
       "playlist": {
         "bsonType": "objectId",
