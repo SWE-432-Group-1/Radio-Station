@@ -1,0 +1,290 @@
+<main class="container">
+    <nav class="nav-bar">
+        <div><img id="web-logo" src="./static/Producer/images/logo.png"></div>
+        <div onclick="<%=userHandler%>" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Producer</div>
+    </nav>
+    <article class="body">
+        <div class="calendar">
+            <div style="padding:1em; font-size:large;"><Strong>My events:</Strong></div>
+            <div id="events"></div>
+            <div style="display: grid; grid-template-columns: 145px 200px;">
+                <div></div>
+                <div style="display: center; padding:0.5em; font-size:2em;"><Strong>Calendar</Strong></div>
+            </div>
+            <div id="calendar-body">
+                <% days.forEach((d)=> { %>
+                    <div>
+                        <%= d %>
+                    </div>
+                    <% }) %>
+            </div>
+            <div id="month" style="text-align: center;">
+                <div id="arrow"><Strong><</Strong></div>
+                <div><Strong>February 2024</Strong></div>
+                <div id="arrow"><Strong>></Strong></div>
+            </div>
+        </div>
+        <div class="song-list">
+            <div id="song-search">
+                <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 0.8em; border-radius: 5px;">
+                    <div id="playlist" style="padding: 1em;">
+                        <div></div>
+                        <div><Strong>Playlist for DJs</Strong></div>
+                        <select name="djs" id="djs">
+                            <option value="default">Select DJ</option>
+                        </select>
+                        <div></div>
+                        <div id="song-buttons"><Strong>+</Strong></div>
+                        <div></div>
+                        <div id="song-buttons"><Strong>-</Strong></div>
+                    </div>
+                    <table id="song-names">
+                        <% songs.forEach((s)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= s.name %>
+                                </td>
+                                <td>
+                                    <strong>Artist</strong>: <%= s.artist %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </article>
+    <article class="body">
+        <div class="dj-list">
+            <div id="dj-search">
+                <form name="dj-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div id="list" style="padding: 1em;">
+                        <div></div>
+                        <div><Strong>List of available DJs</Strong></div>
+                    </div>
+                    <table id="dj-names"></table>
+                </form>
+            </div>
+        </div>
+        <div class="pod-list">
+            <div id="pod-search">
+                <form name="pod-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div id="list-2" style="padding: 1em;">
+                        <div></div>
+                        <div><Strong>My favorite podcasts</Strong></div>
+                    </div>
+                    <table id="pods">
+                        <% podcasts.forEach((p)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= p.name %>
+                                </td>
+                                <td>
+                                    <strong>Episode</strong>: <%= p.episode %>
+                                </td>
+                                <td>
+                                    <strong>Duration</strong>: <%= p.duration %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </article>
+</main>
+
+<script>
+    var eventsList = [];
+
+    // adds new events from calendar
+    document.querySelectorAll('#calendar-body div:nth-child(n+8)').forEach((e) => {
+        e.addEventListener('click', function () {
+            const name = prompt('Event Name:');
+            if (!name)
+                // no event name was given
+                alert('No event name was provided!');
+            if (eventsList.length >= 7)
+                // events exceeds the limit
+                alert('Too many events have been added!');
+            if (name && eventsList.length < 7) {
+                // only 7 events can be added for now
+                eventsList.push({ event: name, date: e.innerText });
+                document.querySelector('#events').innerHTML = "";
+                printEvents();
+                alert(`Event "${name}" added to events!`);
+            }
+        });
+    });
+
+    // display events
+    function printEvents() {
+        for (let e of eventsList) {
+            const doc = document.createElement('div');
+            doc.innerHTML = e.event;
+            doc.onclick = function () { alert(`You have a ${e.event} on February ${e.date}, 2024`) };
+            document.querySelector('#events').appendChild(doc);
+        }
+    }
+
+    // function for user profile
+    function user() {
+        alert('Functionality not available at the moment!');
+    }
+
+    function DJ(name, experience, availability) {
+        this.name = name;
+        this.experience = experience;
+        this.availability = availability;
+    }
+
+    var djNamesList = [];
+
+    // function to book a dj
+    function bookDJ(djName, djAvailability) {
+        let num = 0;
+        for (let dj of djNamesList) {
+            num += 1;
+            if (dj === djName) {
+                const doc = document.createElement('option');
+                doc.value = `dj${num}`;
+                doc.textContent = dj;
+                document.querySelector("#djs").appendChild(doc);
+            }
+        }
+    }
+
+    // list of djs that can be booked
+    function djList() {
+        const djs = [
+            { name: "John Smith", experience: "7 yrs", availability: "Mon 8am - 5pm" },
+            { name: "John Doe", experience: "2 yrs", availability: "Fri 10am - 3pm" },
+            { name: "Jane Doe", experience: "1 yrs", availability: "Wed 11am - 2pm" },
+            { name: "Joe Joe", experience: "0 yrs", availability: "Tue 10am - 12pm" },
+            { name: "Jack Smith", experience: "10 yrs", availability: "Thu 7am - 7pm" },
+            { name: "Steve Mason", experience: "9 yrs", availability: "Tue 9am - 4pm" },
+        ];
+        for (let d of djs) {
+            const person = new DJ(d.name, d.experience, d.availability);
+            const doc = document.createElement('tr');
+            //const button = document.createElement('td');
+            const djName = document.createElement('td');
+            const djExperience = document.createElement('td');
+            const djAvailability = document.createElement('td');
+            djName.innerHTML = `<strong>Name</strong>: ${person.name}`;
+            djExperience.innerHTML = `<strong>Experience</strong>: ${person.experience}`;
+            djAvailability.innerHTML = `<strong>Availability</strong>: ${person.availability}`;
+            djNamesList.push(person.name);
+            bookDJ(person.name, person.availability);
+            doc.appendChild(djName);
+            doc.appendChild(djExperience);
+            doc.appendChild(djAvailability);
+            document.querySelector("#dj-names").appendChild(doc);
+        }
+    }
+
+    // list of songs for a dj
+    function songsListDJ1() {
+        const songs = [
+            { name: 'Valor', artist: 'scRem' },
+            { name: 'Pearl', artist: 'Jonna' },
+            { name: "Good ol' days", artist: 'Ollie Wood' },
+            { name: 'Easy out', artist: 'Jack Man' },
+            { name: 'Lost', artist: 'Paralysis' },
+            { name: 'Hands Down', artist: 'G.O.A.T' },
+            { name: 'Chime in', artist: 'Kelly Rose' },
+            { name: 'Peace', artist: 'Z' },
+            { name: 'Journey', artist: 'Grace Holt' },
+            { name: "Night thoughts", artist: "Y" },
+            { name: "Laughin", artist: "JokesONU" },
+            { name: "Never gonna", artist: "Adam" },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // list of songs for a dj
+    function songsListDJ2() {
+        const songs = [
+            { name: 'Good vibes', artist: 'Heaven' },
+            { name: 'Chained', artist: 'Past' },
+            { name: 'Beyond Reason', artist: 'Maggie C.' },
+            { name: 'Denial', artist: 'toxic' },
+            { name: 'Grove and Move', artist: 'AJ' },
+            { name: 'Jokes on YOU', artist: 'mANIAC' },
+            { name: 'Despair and Darkness', artist: 'hopeless' },
+            { name: 'Time of your life', artist: 'Blank' },
+            { name: 'Free of Charge', artist: '$oney' },
+            { name: "Night thoughts", artist: "Y" },
+            { name: "Laughin", artist: "JokesONU" },
+            { name: "Never gonna", artist: "Adam" },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // a default list of songs for dj
+    function defaultList() {
+        const songs = [
+            { name: 'Vibin', artist: 'Joe Smith' },
+            { name: 'Back to back', artist: 'Jim Jones' },
+            { name: 'Ghosted', artist: 'Polly Grace' },
+            { name: 'Golden Dust', artist: 'Shiny' },
+            { name: 'Whispers', artist: 'Paranoia' },
+            { name: 'Our Galaxy', artist: 'Cosmos' },
+            { name: 'Dreamy', artist: 'Andy A.' },
+            { name: 'Vast Landscape', artist: 'Hustler' },
+            { name: 'Night thoughts', artist: 'Y' },
+            { name: 'Beyond Reason', artist: 'Maggie C.' },
+            { name: 'Denial', artist: 'toxic' },
+        ];
+
+        for (let s of songs) {
+            const doc = document.createElement('tr');
+            const name = document.createElement('td');
+            const artist = document.createElement('td');
+            name.innerHTML = `<strong>Name</strong>: ${s.name}`;
+            artist.innerHTML = `<strong>Artist</strong>: ${s.artist}`;
+            doc.appendChild(name);
+            doc.appendChild(artist);
+            document.querySelector('#song-names').appendChild(doc);
+        }
+    }
+
+    // logic for list of songs
+    document.querySelector("#djs").addEventListener("change", function () {
+        let dj = this.value;
+        if (dj === "dj1") {
+            document.querySelector('#song-names').innerHTML = "";
+            songsListDJ1();
+        }
+        else if (dj === "dj2") {
+            document.querySelector('#song-names').innerHTML = "";
+            songsListDJ2();
+        }
+        else {
+            document.querySelector('#song-names').innerHTML = "";
+            defaultList();
+        }
+    });
+
+    djList();
+</script>
