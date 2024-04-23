@@ -24,13 +24,14 @@ var reportTitle = "Report";
 const DJList = ["john", "joe", "sam", "frank", "bob", "bill"]; 
 var validDJ = true; 
 
-const handleAll = (app) => {
-    handleDefault(app); 
-    handleDateChange(app);
-    handleForm(app);
-    handleTableDelete(app);
-    handleTableUndo(app);
-    handleReport(app);   
+const handleAll = (app, db) => {
+  // Pass the db into each and update each method to use DB. 
+  handleDefault(app); 
+  handleDateChange(app);
+  handleForm(app);
+  handleTableDelete(app);
+  handleTableUndo(app);
+  handleReport(app);   
 };
 
 
