@@ -73,3 +73,15 @@ export const PlaylistSchema = new Schema({
   },
 });
 export const Playlist = mongoose.model("Playlist", PlaylistSchema);
+
+export const NoteSchema = new Schema({
+  pdate: {
+    type: Date,
+    required: true,
+  },
+  comments: {
+    type: String,
+    required: true,
+  },
+});
+export const Note = mongoose.model("Note", NoteSchema);

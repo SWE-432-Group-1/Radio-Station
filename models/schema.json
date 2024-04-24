@@ -92,5 +92,21 @@
         "description": "Playlist to be played during the timeslot"
       }
     }
+  },
+  {
+    "name": "notes",
+    "bsonType": "object",
+    "required": ["pdate", "comments"],
+    "properties": {
+      "pdate": {
+        "bsonType": "date",
+        "description": "Date for the note"
+      },
+      "comments": {
+        "bsonType": "string",
+        "description": "Comments about the day"
+      }
+    }
   }
+
 ]
