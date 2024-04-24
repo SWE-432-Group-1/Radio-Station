@@ -12,6 +12,11 @@ export const TimeslotSchema = new Schema({
     type: Date,
     required: true,
   },
+  dj: {
+    type: ObjectId,
+    ref: "Dj",
+    required: true,
+  }
 });
 export const Timeslot = mongoose.model("Timeslot", TimeslotSchema);
 

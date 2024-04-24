@@ -2,7 +2,7 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start", "end"],
+    "required": ["start", "end", "dj"],
     "properties": {
       "start": {
         "bsonType": "date",
@@ -11,6 +11,10 @@
       "end": {
         "bsonType": "date",
         "description": "End time of the timeslot"
+      },
+      "dj": {
+        "bsonType": "objectId",
+        "description": "Dj for this timeslot"
       }
     }
   },
@@ -43,7 +47,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name", "djs"],
+    "required": ["name", "dj"],
     "properties": {
       "name": {
         "bsonType": "string",
