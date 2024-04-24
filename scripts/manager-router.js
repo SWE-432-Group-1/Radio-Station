@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/* All these global variables should become session variables! */
+
 // Date object for the selected day 
 var selectedDay = null;
 var dateValue = null; 
@@ -24,18 +26,20 @@ var reportTitle = "Report";
 const DJList = ["john", "joe", "sam", "frank", "bob", "bill"]; 
 var validDJ = true; 
 
+/* End session variables */ 
+
 const handleAll = (app, db) => {
   // Pass the db into each and update each method to use DB. 
-  handleDefault(app); 
+  handleDefault(app, db); 
   handleDateChange(app);
-  handleForm(app);
-  handleTableDelete(app);
-  handleTableUndo(app);
-  handleReport(app);   
+  handleForm(app, db);
+  handleTableDelete(app, db);
+  handleTableUndo(app, db);
+  handleReport(app, db);   
 };
 
 
-const handleDefault = (app) => {
+const handleDefault = (app, db) => {
   app.get("/manager", (req, res) => {
     // Default to today if no value
     if (selectedDay == null){
@@ -43,7 +47,17 @@ const handleDefault = (app) => {
       selectedDay = new Date(date.getTime() - date.getTimezoneOffset()*60000);
     }
     dateValue = selectedDay.toISOString().split('T')[0];
-    dateString = selectedDay.toDateString(); 
+    dateString = selectedDay.toDateString();
+    
+    // Use the date to get all timeslots for today and store them in time_slots
+
+      // Sort time_slots. 
+    sortTimes(); 
+
+
+    // Use the date to get all producer notes for today
+
+
     
     res.render(join(__dirname, "../views/Manager/manager.ejs") , {
       dateValue: dateValue,
@@ -87,7 +101,7 @@ const handleDateChange = (app) => {
   });
 }
 
-const handleForm = (app) => {
+const handleForm = (app, db) => {
   app.post("/manager/form", (req, res) => {
     let startTime = req.body.start_time; 
     let endTime = req.body.end_time;
@@ -115,10 +129,11 @@ const handleForm = (app) => {
         end: endTime,
         dj: dj
       }
+
+      // Instead of push, add it to the data base
       time_slots.push(slot); 
-      
-      // Sort the time slots. 
-      sortTimes(); 
+
+      // Removed sortTimes() from here
     }
 
     // Redirect to the manager page. 
@@ -126,37 +141,41 @@ const handleForm = (app) => {
   });
 }
 
-const handleTableDelete = (app) => {
+const handleTableDelete = (app, db) => {
   app.get("/manager/table/delete/:idx", (req, res) => {
     // Get the index 
     const idx = req.params.idx; 
     // Remove the slot from the list and add it to UNDO
     UNDO.push(time_slots[idx]); 
+    
+    // Instead of this, remove from the database
     time_slots.splice(idx, 1); 
+    
     // Redirect to the manager page. 
     res.redirect("/manager"); 
   });
 }
 
-const handleTableUndo = (app) => {
+const handleTableUndo = (app, db) => {
   app.get("/manager/table/undo", (req, res) => {
     // Pop from undo and put into time slots.
     if (UNDO.length != 0){
       let slot = UNDO.pop();
+      // Instead of this, add slot to the database
       time_slots.push(slot); 
-      sortTimes(); 
+      // Removed sortTimes() from here
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
   });
 }
 
-const handleReport = (app) => {
+const handleReport = (app, db) => {
   app.get("/manager/report/:idx", (req, res) => {
     const idx = req.params.idx; 
 
-    // Mock Data
-    report = []; 
+    // Mock Data: Instead, get the report from the database
+    report = [];
     for (let i = 0; i < 101; i++){
       report.push({
         prod: "Producer Song " + i, 
