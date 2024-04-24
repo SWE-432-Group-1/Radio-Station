@@ -61,17 +61,16 @@ export const PlaylistSchema = new Schema({
   songs: {
     type: [
       {
-        song: {
+        _id: {
           type: ObjectId,
           ref: "Song",
           required: true,
-        },
-        producer_created: {
-          type: Boolean,
-          required: true,
-        },
+        }
       },
-    ],
+    ]
+  },
+  producer_created: {
+    type: Boolean,
     required: true,
   },
   timeslot: {

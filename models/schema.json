@@ -55,7 +55,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name","dj"],
+    "required": ["name","dj", "producer_created"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -70,18 +70,22 @@
         "description": "List of IDs for songs in the playlist",
         "items": {
           "bsonType": "object",
-          "required": ["song","producer_created"],
+          "required": ["song"],
           "properties": {
-            "song": {
+            "_id": {
               "bsonType": "objectId",
               "description": "ID of the song"
-            },
-            "producer_created": {
-              "bsonType": "bool",
-              "description": "Whether the producer created this song"
             }
           }
         }
+      },
+      "producer_created": {
+        "bsonType": "bool",
+        "description": "Whether the producer created this playlist"
+      },
+      "timeslot": {
+        "bsonType": "objectId",
+        "description": "ID of the song timeslot"
       }
     }
   },
