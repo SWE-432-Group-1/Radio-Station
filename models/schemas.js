@@ -12,11 +12,24 @@ export const TimeslotSchema = new Schema({
     type: Date,
     required: true,
   },
+  dj: {
+    type: ObjectId,
+    ref: "Dj",
+    required: true,
+  }
 });
 export const Timeslot = mongoose.model("Timeslot", TimeslotSchema);
 
 export const DjSchema = new Schema({
   name: {
+    type: String,
+    required: true,
+  },
+  availability: {
+    type: String,
+    required: true,
+  },
+  experience: {
     type: String,
     required: true,
   },
@@ -68,3 +81,31 @@ export const PlaylistSchema = new Schema({
   },
 });
 export const Playlist = mongoose.model("Playlist", PlaylistSchema);
+
+export const NoteSchema = new Schema({
+  pdate: {
+    type: Date,
+    required: true,
+  },
+  comments: {
+    type: String,
+    required: true,
+  },
+});
+export const Note = mongoose.model("Note", NoteSchema);
+
+export const PodcastSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  episode: {
+    type: Number,
+    required: true,
+  },
+  duration: {
+    type: String,
+    required: true,
+  },
+});
+export const Podcast = mongoose.model("Podcast", PodcastSchema);

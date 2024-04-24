@@ -2,7 +2,7 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start", "end"],
+    "required": ["start","end","dj"],
     "properties": {
       "start": {
         "bsonType": "date",
@@ -11,6 +11,10 @@
       "end": {
         "bsonType": "date",
         "description": "End time of the timeslot"
+      },
+      "dj": {
+        "bsonType": "objectId",
+        "description": "Dj for this timeslot"
       }
     }
   },
@@ -22,13 +26,21 @@
       "name": {
         "bsonType": "string",
         "description": "Name of the DJ"
+      },
+      "experience": {
+        "bsonType": "string",
+        "description": "Experience of the DJ"
+      },
+      "availability": {
+        "bsonType": "string",
+        "description": "Availability of the DJ"
       }
     }
   },
   {
     "name": "songs",
     "bsonType": "object",
-    "required": ["title", "artist"],
+    "required": ["title","artist"],
     "properties": {
       "title": {
         "bsonType": "string",
@@ -43,7 +55,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name", "djs"],
+    "required": ["name","dj"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -58,7 +70,7 @@
         "description": "List of IDs for songs in the playlist",
         "items": {
           "bsonType": "object",
-          "required": ["song", "producer_created"],
+          "required": ["song","producer_created"],
           "properties": {
             "song": {
               "bsonType": "objectId",
@@ -76,7 +88,7 @@
   {
     "name": "timeslot_playlists",
     "bsonType": "object",
-    "required": ["timeslot", "playlist"],
+    "required": ["timeslot","playlist"],
     "properties": {
       "timeslot": {
         "bsonType": "objectId",
@@ -86,6 +98,40 @@
       "playlist": {
         "bsonType": "objectId",
         "description": "Playlist to be played during the timeslot"
+      }
+    }
+  },
+  {
+    "name": "notes",
+    "bsonType": "object",
+    "required": ["pdate", "comments"],
+    "properties": {
+      "pdate": {
+        "bsonType": "date",
+        "description": "Date for the note"
+      },
+      "comments": {
+        "bsonType": "string",
+        "description": "Comments about the day"
+      }
+    }
+  },
+  {
+    "name": "podcasts",
+    "bsonType": "object",
+    "required": ["name", "episode", "duration"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name of the podcast"
+      },
+      "episode": {
+        "bsonType": "string",
+        "description": "Episode of the podcast"
+      },
+      "duration": {
+        "bsonType": "string",
+        "description": "Duration of the podcast episode"
       }
     }
   }

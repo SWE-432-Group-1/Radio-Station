@@ -17,6 +17,7 @@ const app = express();
 
 const mongooseClientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
+  dbName: 'RadioStation'
 };
 await mongoose.connect(process.env.MONGO_URL, mongooseClientOptions);
 await mongoose.connection.db.admin().command({ ping: 1 });
