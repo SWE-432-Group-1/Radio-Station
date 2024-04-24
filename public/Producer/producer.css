@@ -37,33 +37,16 @@ button:hover {
     cursor: pointer;
 }
 
+#djs {
+    cursor: pointer;
+}
+
 #dj-names tr {
     display: grid;
     box-shadow: 1px 1px 1px 1px #7D53DE;
-    padding: 0.33em;
+    padding: 0.67em;
     border-radius: 5px;
     grid-template-columns: 150px 150px 150px;
-}
-
-#dj-names td:nth-child(n+4) {
-    display: flex;
-    justify-content: center;
-    border-radius: 5px;
-    border: 1px solid black;
-    align-items: center;
-    width: 50%;
-    background-color: #D1F5FF;
-}
-
-#dj-names td:hover:nth-child(n+4) {
-    box-shadow: 1px 2px 2px #7D53DE;
-    cursor: pointer;
-    background-color: #b8e4ef;
-}
-
-#dj-names button:active {
-    transform: translateY(1px);
-    background-color: #7D53DE;
 }
 
 #user {
@@ -79,8 +62,8 @@ button:hover {
 }
 
 #user:hover {
-    box-shadow: 1px 2px 2px #7D53DE;
-    background-color: #6edcf8;
+    box-shadow: 1px 1px 2px black;
+    background-color: #7D53DE;
     cursor: pointer;
 }
 
@@ -94,6 +77,29 @@ button:hover {
     padding: 1em;
     grid-template-columns: 20px 20px 20px 20px 20px 20px 20px;
     gap: 45px;
+}
+
+#month {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 20px 150px 20px;
+}
+
+#arrow {
+    border: 0.5px solid black;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #D1F5FF;
+}
+
+#arrow:hover {
+    background-color: #7D53DE;
+    cursor: pointer;
+}
+
+#arrow:active {
+    background-color: #7D53DE;
+    transform: translateY(0.5px);
 }
 
 #calendar-body div:nth-child(n+8) {
@@ -119,18 +125,14 @@ button:hover {
 }
 
 #calendar-body div:hover:nth-child(n+8) {
-    background-color: #b8e4ef;
+    background-color: #7D53DE;
     cursor: pointer;
-    box-shadow: 1px 1px 2px #7D53DE;
+    box-shadow: 1px 1px 2px black;
 }
 
 #calendar-body div:active:nth-child(n+8) {
     background-color: #7D53DE;
     transform: translateY(1px);
-}
-
-#djs:hover {
-    cursor: pointer;
 }
 
 #pods tr {
@@ -139,6 +141,41 @@ button:hover {
     box-shadow: 1px 1px 1px 1px #7D53DE;
     padding: 1em;
     border-radius: 5px;
+}
+
+#playlist {
+    display: grid;
+    font-size: large;
+    grid-template-columns: 210px 190px 100px 10px 20px 0.5px 20px;
+}
+
+#song-buttons {
+    background-color: #D1F5FF;
+    border-radius: 10%;
+    text-align: center;
+    border: 0.5px solid black;
+}
+
+#song-buttons:hover {
+    background-color: #7D53DE;
+    cursor: pointer;
+}
+
+#song-buttons:active {
+    background-color: #7D53DE;
+    transform: translateY(0.5px);
+}
+
+#list {
+    display: grid;
+    grid-template-columns: 120px 200px;
+    font-size: large;
+}
+
+#list-2 {
+    display: grid;
+    grid-template-columns: 180px 200px;
+    font-size: large;
 }
 
 #song-names tr {

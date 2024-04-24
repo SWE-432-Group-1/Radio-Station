@@ -25,6 +25,14 @@ export const DjSchema = new Schema({
     type: String,
     required: true,
   },
+  availability: {
+    type: String,
+    required: true,
+  },
+  experience: {
+    type: String,
+    required: true,
+  },
 });
 export const Dj = mongoose.model("Dj", DjSchema);
 
@@ -53,17 +61,16 @@ export const PlaylistSchema = new Schema({
   songs: {
     type: [
       {
-        song: {
+        _id: {
           type: ObjectId,
           ref: "Song",
           required: true,
-        },
-        producer_created: {
-          type: Boolean,
-          required: true,
-        },
+        }
       },
-    ],
+    ]
+  },
+  producer_created: {
+    type: Boolean,
     required: true,
   },
   timeslot: {
@@ -85,3 +92,19 @@ export const NoteSchema = new Schema({
   },
 });
 export const Note = mongoose.model("Note", NoteSchema);
+
+export const PodcastSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  episode: {
+    type: Number,
+    required: true,
+  },
+  duration: {
+    type: String,
+    required: true,
+  },
+});
+export const Podcast = mongoose.model("Podcast", PodcastSchema);

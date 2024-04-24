@@ -2,7 +2,7 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start", "end", "dj"],
+    "required": ["start","end","dj"],
     "properties": {
       "start": {
         "bsonType": "date",
@@ -26,13 +26,21 @@
       "name": {
         "bsonType": "string",
         "description": "Name of the DJ"
+      },
+      "experience": {
+        "bsonType": "string",
+        "description": "Experience of the DJ"
+      },
+      "availability": {
+        "bsonType": "string",
+        "description": "Availability of the DJ"
       }
     }
   },
   {
     "name": "songs",
     "bsonType": "object",
-    "required": ["title", "artist"],
+    "required": ["title","artist"],
     "properties": {
       "title": {
         "bsonType": "string",
@@ -47,7 +55,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name", "dj"],
+    "required": ["name","dj", "producer_created"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -62,25 +70,29 @@
         "description": "List of IDs for songs in the playlist",
         "items": {
           "bsonType": "object",
-          "required": ["song", "producer_created"],
+          "required": ["song"],
           "properties": {
-            "song": {
+            "_id": {
               "bsonType": "objectId",
               "description": "ID of the song"
-            },
-            "producer_created": {
-              "bsonType": "bool",
-              "description": "Whether the producer created this song"
             }
           }
         }
+      },
+      "producer_created": {
+        "bsonType": "bool",
+        "description": "Whether the producer created this playlist"
+      },
+      "timeslot": {
+        "bsonType": "objectId",
+        "description": "ID of the song timeslot"
       }
     }
   },
   {
     "name": "timeslot_playlists",
     "bsonType": "object",
-    "required": ["timeslot", "playlist"],
+    "required": ["timeslot","playlist"],
     "properties": {
       "timeslot": {
         "bsonType": "objectId",
@@ -107,6 +119,24 @@
         "description": "Comments about the day"
       }
     }
+  },
+  {
+    "name": "podcasts",
+    "bsonType": "object",
+    "required": ["name", "episode", "duration"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name of the podcast"
+      },
+      "episode": {
+        "bsonType": "string",
+        "description": "Episode of the podcast"
+      },
+      "duration": {
+        "bsonType": "string",
+        "description": "Duration of the podcast episode"
+      }
+    }
   }
-
 ]
