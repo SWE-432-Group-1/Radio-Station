@@ -44,7 +44,6 @@ var prodNotes = [
 /* End session variables */ 
 
 const handleAll = (app) => {
-  // Pass the db into each and update each method to use DB. 
   handleDefault(app); 
   handleDateChange(app);
   handleForm(app);
@@ -71,15 +70,15 @@ const handleDefault = (app) => {
     time_slots = []
     for (let t of times){
       let djObject = await Dj.find({_id: t.dj});
+      let pListObject = await Playlist.find({timeslot: t._id}); 
+      
       let slot = {
         start: getDateFromTime(t.start),
         end: getDateFromTime(t.end),
         dj: djObject[0].name,
 
-        _id: t._id,
-        startString: t.start,
-        endString: t.end,
-        dj_id: t.dj
+        tObject: t, 
+        pObject: pListObject[0]
       }; 
       time_slots.push(slot); 
     } 
@@ -138,34 +137,24 @@ const handleForm = (app) => {
   app.post("/manager/form", async (req, res) => {
     let startTime = req.body.start_time; 
     let endTime = req.body.end_time;
-    let dj = req.body.DJ; 
+    let dj = req.body.DJ;
+    let pName = req.body.pName; 
 
     // Check that the DJ is valid
     validDJ = true;
-    const foundDJs = await Dj.find({name: new RegExp('^'+dj+"$", "i")}); 
-    if (foundDJs.length <= 0){
+    const foundDjs = await Dj.find({name: new RegExp('^'+dj+"$", "i")}); 
+    if (foundDjs.length <= 0){
       validDJ = false;
       res.redirect("/manager");
       return; 
     }
-
-    // If valid DJ, keep checking.  
-    let startTimeDate = getDateFromTime(startTime);
-    let endTimeDate = getDateFromTime(endTime); 
     
     // Check for overlaps with other time slots. 
-    overlap = timeOverlap(startTimeDate, endTimeDate); 
+    overlap = timeOverlap(getDateFromTime(startTime), getDateFromTime(endTime)); 
     
+    // No overlap, make the slot
     if (!overlap){ 
-      // No overlap, make the slot
-      const slot = {
-        tdate: dateValue, 
-        start: startTime, 
-        end: endTime,
-        dj: foundDJs[0]._id
-      };
-      // Add it to the data base
-      await Timeslot.create(slot); 
+      await createEntry(startTime, endTime, foundDjs[0]._id, pName);
     }
 
     // Redirect to the manager page. 
@@ -182,7 +171,8 @@ const handleTableDelete = (app) => {
     UNDO.push(slot); 
     
     // Remove from the collection
-    await Timeslot.deleteOne({_id: slot._id}); 
+    await Timeslot.deleteOne({_id: slot.tObject._id});
+    await Playlist.deleteOne({_id: slot.pObject._id}); 
     
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -194,19 +184,17 @@ const handleTableUndo = (app) => {
     // Pop from undo and put into time slots.
     if (UNDO.length != 0){
       let slot = UNDO.pop();
+      let t = slot.tObject;
+      let p = slot.pObject; 
       // Add back to the collection
-      await Timeslot.create({
-        tdate: dateValue,
-        start: slot.startString,
-        end: slot.endString,
-        dj: slot.dj_id
-      }); 
+      await createEntry(t.start, t.end, t.dj, p.name);  
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
   });
 }
 
+// TO DO: get playlists from collection 
 const handleReport = (app) => {
   app.get("/manager/report/:idx", (req, res) => {
     const idx = req.params.idx; 
@@ -294,24 +282,22 @@ function sortTimes(){
   time_slots = sorted; 
 }
 
-/* Creating Mock Data Below 
-
-const prodNotes = [
-  {
-      prod: "Frank",
-      comment: "The DJ did not show up!"
-  },
-  {
-      prod: "Pete",
-      comment: "He's a fun guy, we should try to book him for more times."
-  },
-  {
-      prod: "Bob",
-      comment: "The DJ was 10 minutes late and I had to stall the crowd."
-  },
-  {
-      prod: "Billy",
-      comment: "This guy was amazing, he played all the right songs!" 
-  }
-];
-*/ 
+/* 
+Create a Timeslot and Playlist entry. 
+The relationship is 1:1 
+*/
+async function createEntry(start, end, djID, pName){
+  const createdSlot = await Timeslot.create({
+    tdate: dateValue, 
+    start: start, 
+    end: end,
+    dj: djID
+  }); 
+  
+  // Make the playlist
+  await Playlist.create({
+    name: pName, 
+    dj: createdSlot.dj,  
+    timeslot: createdSlot._id
+  }); 
+}

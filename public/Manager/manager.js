@@ -73,10 +73,14 @@ function onSubmit(e){
     const DJ = $("#DJ_box"); 
     const DJVal = DJ.value; 
 
+    const playlist = $("#playlist_box");
+    const playlistVal = playlist.value; 
+
     // Reset to no borders 
     start_time.style.border = "0px solid black";
     end_time.style.border = "0px solid black";
     DJ.style.border = "0px solid black"; 
+    playlist.style.border = "0px solid black";
 
     // Ensure none of the fields are empty
     let empty = false; 
@@ -92,15 +96,14 @@ function onSubmit(e){
         DJ.style.border = "2px solid red";
         empty = true; 
     }
+    if (playlistVal.trim() == "" || playlistVal == null){
+        playlist.style.border = "2px solid red";
+        empty = true; 
+    }
     if (empty){
         alert("One or more fields of the form are empty."); 
         return; 
     }
-
-    st_date.setTime(st_date.getTime() + st_date.getTimezoneOffset()*60000);
-    et_date.setTime(et_date.getTime() + et_date.getTimezoneOffset()*60000);
-    etVal = et_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    stVal = st_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
     // Ensure end time is after start time
     if (st_date.getTime() > et_date.getTime()){

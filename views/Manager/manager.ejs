@@ -20,14 +20,17 @@
             <form id="times_form" method="POST" action="/manager/form">
                 <button type="submit" id="form_submit">+</button>
                 <label>Time:</label>
-                
                 <input id="start_time_box" type="time" name="start_time"> to
                 <input id="end_time_box" type="time" name="end_time"> 
                 
                 <label>DJ:</label>
                 <input id="DJ_box" type="text" name="DJ">
+
+                <br><br>
+
+                <label>Playlist Name:</label>
+                <input id="playlist_box" type="text", name="pName">
                 
-                <br>
                 <button type="button" id="btnUndo" onclick="onUndo()">Undo</button>
             </form>
             

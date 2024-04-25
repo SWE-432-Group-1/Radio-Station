@@ -65,21 +65,22 @@ export const PlaylistSchema = new Schema({
   songs: {
     type: [
       {
-        _id: {
+        song: {
           type: ObjectId,
           ref: "Song",
           required: true,
-        }
+        }, 
+        producer_created: {
+          type: Boolean,
+          required: true,
+        },
       },
     ]
-  },
-  producer_created: {
-    type: Boolean,
-    required: true,
   },
   timeslot: {
     type: ObjectId,
     ref: "Timeslot",
+    required: true,
   },
 });
 export const Playlist = mongoose.model("Playlist", PlaylistSchema);
