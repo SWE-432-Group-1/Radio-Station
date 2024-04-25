@@ -21,7 +21,6 @@ const mongooseClientOptions = {
 };
 await mongoose.connect(process.env.MONGO_URL, mongooseClientOptions);
 await mongoose.connection.db.admin().command({ ping: 1 });
-const db = mongoose.connection;
 console.log("Connected to MongoDB");
 
 app.set("views", "./views");
@@ -36,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Handle all of the routing.
-managerRouter.handleAll(app, db);
+managerRouter.handleAll(app);
 producerRouter.handleAll(app);
 djRouter.handleAll(app);
 

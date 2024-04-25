@@ -1,8 +1,12 @@
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
+import {Timeslot, Dj, Song, Playlist, Note } from '../models/schemas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const ObjectId = mongoose.Types.ObjectId;
 
 /* All these global variables should become session variables! */
 
@@ -22,43 +26,69 @@ var UNDO = [];
 var report = [];
 var reportTitle = "Report"; 
 
-// List of valid DJ's for now
-const DJList = ["john", "joe", "sam", "frank", "bob", "bill"]; 
+// Whether the DJ was found or not. 
 var validDJ = true; 
+
+// List of producer notes
+var prodNotes = [
+  {
+    prod: "Frank",
+    comment: "The DJ did not show up!"
+  },
+  {
+    prod: "Pete",
+    comment: "He's a fun guy, we should try to book him for more times."
+  },
+]
 
 /* End session variables */ 
 
-const handleAll = (app, db) => {
+const handleAll = (app) => {
   // Pass the db into each and update each method to use DB. 
-  handleDefault(app, db); 
+  handleDefault(app); 
   handleDateChange(app);
-  handleForm(app, db);
-  handleTableDelete(app, db);
-  handleTableUndo(app, db);
-  handleReport(app, db);   
+  handleForm(app);
+  handleTableDelete(app);
+  handleTableUndo(app);
+  handleReport(app);   
 };
 
 
-const handleDefault = (app, db) => {
-  app.get("/manager", (req, res) => {
+const handleDefault = (app) => {
+  app.get("/manager", async (req, res) => {
     // Default to today if no value
     if (selectedDay == null){
       selectedDay = new Date();
     }
     dateValue = selectedDay.toLocaleDateString().split("/");
     dateValue = dateValue[2] + "-" + dateValue[0].padStart(2, "0") 
-                    + "-" + dateValue[1].padStart(2, "0")
+                    + "-" + dateValue[1].padStart(2, "0");
 
     dateString = selectedDay.toDateString();
     
     // Use the date to get all timeslots for today and store them in time_slots
+    let times = await Timeslot.find({tdate: dateValue})
+    time_slots = []
+    for (let t of times){
+      let djObject = await Dj.find({_id: t.dj});
+      let slot = {
+        start: getDateFromTime(t.start),
+        end: getDateFromTime(t.end),
+        dj: djObject[0].name,
 
-      // Sort time_slots. 
+        _id: t._id,
+        startString: t.start,
+        endString: t.end,
+        dj_id: t.dj
+      }; 
+      time_slots.push(slot); 
+    } 
+    // Sort time_slots. 
     sortTimes(); 
 
 
     // Use the date to get all producer notes for today
-
+    prodNotes = await Note.find({pdate: dateValue});
 
     
     res.render(join(__dirname, "../views/Manager/manager.ejs") , {
@@ -93,6 +123,7 @@ const handleDateChange = (app) => {
     validDJ = true; 
 
     // Reset Producer Notes
+    prodNotes = [];
 
     // Reset Report
     report = [];
@@ -103,41 +134,38 @@ const handleDateChange = (app) => {
   });
 }
 
-const handleForm = (app, db) => {
-  app.post("/manager/form", (req, res) => {
+const handleForm = (app) => {
+  app.post("/manager/form", async (req, res) => {
     let startTime = req.body.start_time; 
     let endTime = req.body.end_time;
     let dj = req.body.DJ; 
 
     // Check that the DJ is valid
     validDJ = true;
-
-    // Query the database and try to find DJ, not what's below
-    if (DJList.indexOf(dj.toLowerCase()) == -1){
+    const foundDJs = await Dj.find({name: new RegExp('^'+dj+"$", "i")}); 
+    if (foundDJs.length <= 0){
       validDJ = false;
       res.redirect("/manager");
       return; 
     }
 
     // If valid DJ, keep checking.  
-    startTime = getDateFromTime(startTime);
-    endTime = getDateFromTime(endTime); 
+    let startTimeDate = getDateFromTime(startTime);
+    let endTimeDate = getDateFromTime(endTime); 
     
     // Check for overlaps with other time slots. 
-    overlap = timeOverlap(startTime, endTime); 
+    overlap = timeOverlap(startTimeDate, endTimeDate); 
     
     if (!overlap){ 
-      // No overlap, so add it to the time slots
+      // No overlap, make the slot
       const slot = {
+        tdate: dateValue, 
         start: startTime, 
         end: endTime,
-        dj: dj
-      }
-
-      // Instead of push, add it to the data base
-      time_slots.push(slot); 
-
-      // Removed sortTimes() from here
+        dj: foundDJs[0]._id
+      };
+      // Add it to the data base
+      await Timeslot.create(slot); 
     }
 
     // Redirect to the manager page. 
@@ -145,36 +173,41 @@ const handleForm = (app, db) => {
   });
 }
 
-const handleTableDelete = (app, db) => {
-  app.get("/manager/table/delete/:idx", (req, res) => {
+const handleTableDelete = (app) => {
+  app.get("/manager/table/delete/:idx", async (req, res) => {
     // Get the index 
     const idx = req.params.idx; 
-    // Remove the slot from the list and add it to UNDO
-    UNDO.push(time_slots[idx]); 
+    const slot = time_slots[idx]; 
+    // Store it in the undo list
+    UNDO.push(slot); 
     
-    // Instead of this, remove from the database
-    time_slots.splice(idx, 1); 
+    // Remove from the collection
+    await Timeslot.deleteOne({_id: slot._id}); 
     
     // Redirect to the manager page. 
     res.redirect("/manager"); 
   });
 }
 
-const handleTableUndo = (app, db) => {
-  app.get("/manager/table/undo", (req, res) => {
+const handleTableUndo = (app) => {
+  app.get("/manager/table/undo", async (req, res) => {
     // Pop from undo and put into time slots.
     if (UNDO.length != 0){
       let slot = UNDO.pop();
-      // Instead of this, add slot to the database
-      time_slots.push(slot); 
-      // Removed sortTimes() from here
+      // Add back to the collection
+      await Timeslot.create({
+        tdate: dateValue,
+        start: slot.startString,
+        end: slot.endString,
+        dj: slot.dj_id
+      }); 
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
   });
 }
 
-const handleReport = (app, db) => {
+const handleReport = (app) => {
   app.get("/manager/report/:idx", (req, res) => {
     const idx = req.params.idx; 
 
@@ -261,24 +294,24 @@ function sortTimes(){
   time_slots = sorted; 
 }
 
-/* Creating Mock Data Below */
+/* Creating Mock Data Below 
 
 const prodNotes = [
   {
-      dj: "Frank",
-      desc: "The DJ did not show up!"
+      prod: "Frank",
+      comment: "The DJ did not show up!"
   },
   {
-      dj: "Pete",
-      desc: "He's a fun guy, we should try to book him for more times."
+      prod: "Pete",
+      comment: "He's a fun guy, we should try to book him for more times."
   },
   {
-      dj: "Bob",
-      desc: "The DJ was 10 minutes late and I had to stall the crowd."
+      prod: "Bob",
+      comment: "The DJ was 10 minutes late and I had to stall the crowd."
   },
   {
-      dj: "Billy",
-      desc: "This guy was amazing, he played all the right songs!" 
+      prod: "Billy",
+      comment: "This guy was amazing, he played all the right songs!" 
   }
 ];
-
+*/ 

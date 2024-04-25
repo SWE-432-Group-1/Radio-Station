@@ -87,7 +87,7 @@
             <h3>Producer's Notes: <%= dateString %></h3>
             <ul id="notes_list">
                 <% for( let index = 0; index < prodNotes.length; index++ ) { %>
-                    <li><%= prodNotes[index].dj + ": " + prodNotes[index].desc %></li>
+                    <li><%= prodNotes[index].prod + ": " + prodNotes[index].comment %></li>
                 <% } %>
             </ul>
         </article>

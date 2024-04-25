@@ -82,10 +82,14 @@ export const Playlist = mongoose.model("Playlist", PlaylistSchema);
 
 export const NoteSchema = new Schema({
   pdate: {
-    type: Date,
+    type: String,
     required: true,
   },
-  comments: {
+  comment: {
+    type: String,
+    required: true,
+  },
+  prod: {
     type: String,
     required: true,
   },

@@ -108,15 +108,19 @@
   {
     "name": "notes",
     "bsonType": "object",
-    "required": ["pdate", "comments"],
+    "required": ["pdate", "comment", "prod"],
     "properties": {
       "pdate": {
-        "bsonType": "date",
-        "description": "Date for the note"
+        "bsonType": "string",
+        "description": "Date for the note, format = yyyy-mm-dd"
       },
-      "comments": {
+      "comment": {
         "bsonType": "string",
         "description": "Comments about the day"
+      }, 
+      "prod": {
+        "bsonType": "string",
+        "description": "Name of the producer leaving the note"
       }
     }
   },
