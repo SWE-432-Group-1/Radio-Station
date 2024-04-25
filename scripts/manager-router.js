@@ -154,7 +154,7 @@ const handleForm = (app) => {
     
     // No overlap, make the slot
     if (!overlap){ 
-      await createEntry(startTime, endTime, foundDjs[0]._id, pName);
+      await createEntry(startTime, endTime, foundDjs[0]._id, pName, []);
     }
 
     // Redirect to the manager page. 
@@ -187,7 +187,7 @@ const handleTableUndo = (app) => {
       let t = slot.tObject;
       let p = slot.pObject; 
       // Add back to the collection
-      await createEntry(t.start, t.end, t.dj, p.name);  
+      await createEntry(t.start, t.end, t.dj, p.name, p.songs);  
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -224,15 +224,10 @@ export default {
 };
 
 
-
-
-
-
 /* Helper functions Below */
 
 
 // Ensure end time is after start time
- 
 function getDateFromTime(time){
   let timeSplit = time.split(":");
   let d = new Date(selectedDay); 
@@ -286,7 +281,7 @@ function sortTimes(){
 Create a Timeslot and Playlist entry. 
 The relationship is 1:1 
 */
-async function createEntry(start, end, djID, pName){
+async function createEntry(start, end, djID, pName, pSongs){
   const createdSlot = await Timeslot.create({
     tdate: dateValue, 
     start: start, 
@@ -297,7 +292,8 @@ async function createEntry(start, end, djID, pName){
   // Make the playlist
   await Playlist.create({
     name: pName, 
-    dj: createdSlot.dj,  
+    dj: createdSlot.dj, 
+    songs: pSongs, 
     timeslot: createdSlot._id
   }); 
 }
