@@ -196,16 +196,41 @@ const handleTableUndo = (app) => {
 
 // TO DO: get playlists from collection 
 const handleReport = (app) => {
-  app.get("/manager/report/:idx", (req, res) => {
+  app.get("/manager/report/:idx", async (req, res) => {
     const idx = req.params.idx; 
+    const slot = time_slots[idx]; 
+    const songs = slot.pObject.songs;  
 
-    // Mock Data: Instead, get the report from the database
-    report = [];
-    for (let i = 0; i < 101; i++){
+    let prodSongs = []
+    let djSongs = []
+    let pCounter = 1;
+    let dCounter = 1; 
+
+    for (let item of songs){
+      const song = await Song.find({_id: item.song})
+      const songTitle = song[0].title; 
+      const songArtist = song[0].artist; 
+      const songString = songTitle + " by " + songArtist 
+
+      if (item.producer_created == true){
+        prodSongs.push( pCounter + ". " + songString);
+        pCounter += 1; 
+      }
+      else{
+        djSongs.push( dCounter + ". " + songString);
+        dCounter += 1
+      }
+    }
+    if (pCounter != dCounter){
+      makeSameSize(prodSongs, djSongs); 
+    }
+
+    report = []
+    for (let i=0; i < prodSongs.length; i++){
       report.push({
-        prod: "Producer Song " + i, 
-        dj: "DJ Song " + i
-      })
+        prod: prodSongs[i],
+        dj: djSongs[i]
+      });
     }
 
     // Fix title
@@ -296,4 +321,20 @@ async function createEntry(start, end, djID, pName, pSongs){
     songs: pSongs, 
     timeslot: createdSlot._id
   }); 
+}
+
+function makeSameSize(arr1, arr2){
+  let l1 = arr1.length;
+  let l2 = arr2.length;
+  let diff = Math.abs(l1 - l2); 
+
+  if (l1 < l2){
+    for (let i=0; i < diff; i++){ 
+      arr1.push(""); 
+    }
+  } else{
+      for (let i=0; i < diff; i++){
+        arr2.push(""); 
+      }
+  } 
 }
