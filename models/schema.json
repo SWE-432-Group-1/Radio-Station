@@ -82,10 +82,6 @@
       "producer_created": {
         "bsonType": "bool",
         "description": "Whether the producer created this playlist"
-      },
-      "timeslot": {
-        "bsonType": "objectId",
-        "description": "ID of the song timeslot"
       }
     }
   },

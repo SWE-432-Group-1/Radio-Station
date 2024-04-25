@@ -43,10 +43,12 @@ const handleDefault = (app, db) => {
   app.get("/manager", (req, res) => {
     // Default to today if no value
     if (selectedDay == null){
-      const date = new Date();
-      selectedDay = new Date(date.getTime() - date.getTimezoneOffset()*60000);
+      selectedDay = new Date();
     }
-    dateValue = selectedDay.toISOString().split('T')[0];
+    dateValue = selectedDay.toLocaleDateString().split("/");
+    dateValue = dateValue[2] + "-" + dateValue[0].padStart(2, "0") 
+                    + "-" + dateValue[1].padStart(2, "0")
+
     dateString = selectedDay.toDateString();
     
     // Use the date to get all timeslots for today and store them in time_slots
@@ -109,6 +111,8 @@ const handleForm = (app, db) => {
 
     // Check that the DJ is valid
     validDJ = true;
+
+    // Query the database and try to find DJ, not what's below
     if (DJList.indexOf(dj.toLowerCase()) == -1){
       validDJ = false;
       res.redirect("/manager");

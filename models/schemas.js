@@ -73,11 +73,6 @@ export const PlaylistSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  timeslot: {
-    type: ObjectId,
-    ref: "Timeslot",
-    required: true,
-  },
 });
 export const Playlist = mongoose.model("Playlist", PlaylistSchema);
 

@@ -8,7 +8,7 @@ async function date_changed(e){
     // Get the new date value
     const date_box = $("#date_box");
     let value = date_box.valueAsDate;
-    value.setTime(value.getTime() + value.getTimezoneOffset()*60000);
+    value.setTime(value.getTime() + value.getTimezoneOffset()*60000); 
 
     // Pass this to the back end
     const resp = await fetch("/manager/newDate", {
