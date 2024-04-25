@@ -4,12 +4,16 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 export const TimeslotSchema = new Schema({
+  tdate: {
+    type: String,
+    required: true,
+  },
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
   dj: {

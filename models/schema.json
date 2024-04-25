@@ -2,15 +2,19 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start","end","dj"],
+    "required": ["tdate","start","end","dj"],
     "properties": {
+      "tdate": {
+        "bsonType": "string",
+        "description": "Date of timeslot, yyyy-mm-dd"
+      },
       "start": {
-        "bsonType": "date",
-        "description": "Start time of the timeslot"
+        "bsonType": "string",
+        "description": "Start time, format = HH:MM (military time)"
       },
       "end": {
-        "bsonType": "date",
-        "description": "End time of the timeslot"
+        "bsonType": "string",
+        "description": "End time, format = HH:MM (military time)"
       },
       "dj": {
         "bsonType": "objectId",
