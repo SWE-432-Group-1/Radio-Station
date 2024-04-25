@@ -216,7 +216,7 @@ const handleReport = (app) => {
         prodSongs.push( pCounter + ". " + songString);
         pCounter += 1; 
       }
-      else{
+      if (item.dj_played == true){
         djSongs.push( dCounter + ". " + songString);
         dCounter += 1
       }

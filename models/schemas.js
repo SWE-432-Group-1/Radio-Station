@@ -74,6 +74,10 @@ export const PlaylistSchema = new Schema({
           type: Boolean,
           required: true,
         },
+        dj_played: {
+          type: Boolean,
+          required: true,
+        },
       },
     ]
   },
