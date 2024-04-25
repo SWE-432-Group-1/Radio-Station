@@ -59,7 +59,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name","dj", "producer_created", "timeslot"],
+    "required": ["name","dj", "producer_created"],
     "properties": {
       "name": {
         "bsonType": "string",
