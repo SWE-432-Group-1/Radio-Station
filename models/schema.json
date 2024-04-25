@@ -59,7 +59,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name","dj", "producer_created"],
+    "required": ["name","dj", "producer_created", "timeslot"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -86,6 +86,10 @@
       "producer_created": {
         "bsonType": "bool",
         "description": "Whether the producer created this playlist"
+      },
+      "timeslot": {
+        "bsonType": "objectId",
+        "description": "ID of the timeslot this playlist is assigned to"
       }
     }
   },
