@@ -24,7 +24,13 @@
                 <input id="end_time_box" type="time" name="end_time"> 
                 
                 <label>DJ:</label>
-                <input id="DJ_box" type="text" name="DJ">
+                <input id="DJ_box" type="text" name="DJ" list="djNames">
+
+                <datalist id="djNames">
+                    <% DJNames.forEach( (item) => { %>
+                        <option> <%= item.name %> </option>
+                    <% }) %>
+                </datalist>
 
                 <br><br>
 

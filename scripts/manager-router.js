@@ -85,16 +85,19 @@ const handleDefault = (app) => {
     }
     const playlistTitle = req.session.playlistTitle;
 
+    const DJNames = await Dj.find().select("name");  
+
     res.render(join(__dirname, "../views/Manager/manager.ejs") , {
       dateValue: dateValue,
       dateString: dateString,
       time_slots: time_slots,
       overlap: overlap,
       validDJ: validDJ,
+      DJNames: DJNames, 
 
       report: report,
       reportTitle: reportTitle,
-      playlistTitle: playlistTitle,  
+      playlistTitle: playlistTitle,
 
       prodNotes: prodNotes,
     });
