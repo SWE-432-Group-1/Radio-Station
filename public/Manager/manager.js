@@ -144,7 +144,7 @@ function main(){
     form.addEventListener("submit", onSubmit);
 
     // Exit button
-    const btnExit = $("#btnUser");
+    const btnExit = $("#btnExit");
     btnExit.addEventListener("click", onExit); 
 }
 

@@ -129,11 +129,15 @@ body{
     color: #EEF8FF; 
 }
 
-#btnUser{
+#btnExit{
     border-radius: 50%; 
     background-color: #EEF8FF;
     color: black;
     padding: 1em;  
+}
+
+button:hover{
+    cursor: pointer;
 }
 
 #btnUndo{

@@ -51,7 +51,7 @@ djRouter.handleAll(app);
 
 // Load home page
 app.get("/", (_req, res) => {
-  res.sendFile(join(__dirname, "views/Home/index.html"));
+  res.sendFile(join(__dirname, "public/Home/index.html"));
 });
 
 const LISTEN_PORT = process.env.RADIO_STATION_LISTEN_PORT || 8080;
