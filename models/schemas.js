@@ -4,12 +4,16 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 export const TimeslotSchema = new Schema({
+  tdate: {
+    type: String,
+    required: true,
+  },
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
   dj: {
@@ -61,17 +65,21 @@ export const PlaylistSchema = new Schema({
   songs: {
     type: [
       {
-        _id: {
+        song: {
           type: ObjectId,
           ref: "Song",
           required: true,
-        }
+        }, 
+        producer_created: {
+          type: Boolean,
+          required: true,
+        },
+        dj_played: {
+          type: Boolean,
+          required: true,
+        },
       },
     ]
-  },
-  producer_created: {
-    type: Boolean,
-    required: true,
   },
   timeslot: {
     type: ObjectId,
@@ -83,10 +91,14 @@ export const Playlist = mongoose.model("Playlist", PlaylistSchema);
 
 export const NoteSchema = new Schema({
   pdate: {
-    type: Date,
+    type: String,
     required: true,
   },
-  comments: {
+  comment: {
+    type: String,
+    required: true,
+  },
+  prod: {
     type: String,
     required: true,
   },

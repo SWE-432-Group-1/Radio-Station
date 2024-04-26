@@ -2,15 +2,19 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start","end","dj"],
+    "required": ["tdate","start","end","dj"],
     "properties": {
+      "tdate": {
+        "bsonType": "string",
+        "description": "Date of timeslot, yyyy-mm-dd"
+      },
       "start": {
-        "bsonType": "date",
-        "description": "Start time of the timeslot"
+        "bsonType": "string",
+        "description": "Start time, format = HH:MM (military time)"
       },
       "end": {
-        "bsonType": "date",
-        "description": "End time of the timeslot"
+        "bsonType": "string",
+        "description": "End time, format = HH:MM (military time)"
       },
       "dj": {
         "bsonType": "objectId",
@@ -55,7 +59,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name","dj", "producer_created"],
+    "required": ["name","dj","timeslot"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -70,22 +74,26 @@
         "description": "List of IDs for songs in the playlist",
         "items": {
           "bsonType": "object",
-          "required": ["song"],
+          "required": ["song", "producer_created", "dj_played"],
           "properties": {
-            "_id": {
+            "song": {
               "bsonType": "objectId",
               "description": "ID of the song"
+            },
+            "producer_created": {
+              "bsonType": "bool",
+              "description": "Whether the producer created this song"
+            },
+            "dj_played": {
+              "bsonType": "bool",
+              "description": "Whether the dj played this song"
             }
           }
         }
       },
-      "producer_created": {
-        "bsonType": "bool",
-        "description": "Whether the producer created this playlist"
-      },
       "timeslot": {
         "bsonType": "objectId",
-        "description": "ID of the song timeslot"
+        "description": "ID of the timeslot this playlist is assigned to"
       }
     }
   },
@@ -108,15 +116,19 @@
   {
     "name": "notes",
     "bsonType": "object",
-    "required": ["pdate", "comments"],
+    "required": ["pdate", "comment", "prod"],
     "properties": {
       "pdate": {
-        "bsonType": "date",
-        "description": "Date for the note"
+        "bsonType": "string",
+        "description": "Date for the note, format = yyyy-mm-dd"
       },
-      "comments": {
+      "comment": {
         "bsonType": "string",
         "description": "Comments about the day"
+      }, 
+      "prod": {
+        "bsonType": "string",
+        "description": "Name of the producer leaving the note"
       }
     }
   },

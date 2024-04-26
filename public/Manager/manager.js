@@ -8,7 +8,7 @@ async function date_changed(e){
     // Get the new date value
     const date_box = $("#date_box");
     let value = date_box.valueAsDate;
-    value.setTime(value.getTime() + value.getTimezoneOffset()*60000);
+    value.setTime(value.getTime() + value.getTimezoneOffset()*60000); 
 
     // Pass this to the back end
     const resp = await fetch("/manager/newDate", {
@@ -73,10 +73,14 @@ function onSubmit(e){
     const DJ = $("#DJ_box"); 
     const DJVal = DJ.value; 
 
+    const playlist = $("#playlist_box");
+    const playlistVal = playlist.value; 
+
     // Reset to no borders 
     start_time.style.border = "0px solid black";
     end_time.style.border = "0px solid black";
     DJ.style.border = "0px solid black"; 
+    playlist.style.border = "0px solid black";
 
     // Ensure none of the fields are empty
     let empty = false; 
@@ -92,15 +96,14 @@ function onSubmit(e){
         DJ.style.border = "2px solid red";
         empty = true; 
     }
+    if (playlistVal.trim() == "" || playlistVal == null){
+        playlist.style.border = "2px solid red";
+        empty = true; 
+    }
     if (empty){
         alert("One or more fields of the form are empty."); 
         return; 
     }
-
-    st_date.setTime(st_date.getTime() + st_date.getTimezoneOffset()*60000);
-    et_date.setTime(et_date.getTime() + et_date.getTimezoneOffset()*60000);
-    etVal = et_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    stVal = st_date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
     // Ensure end time is after start time
     if (st_date.getTime() > et_date.getTime()){
@@ -114,6 +117,22 @@ function onSubmit(e){
     $("#times_form").submit(); 
 }
 
+// When the user presses "U" it will undo a deletion from the times table.
+document.addEventListener("keypress", (e) => {
+    if (e.key == "u"){
+        onUndo(); 
+    }
+});
+
+// Exit session function. 
+async function onExit(){
+    const resp = await fetch("/manager/exit");
+    if (resp.ok){
+        alert("Successfully cleared session.");
+        location.reload(); 
+    }
+}
+
 // Main function called when document is loaded. 
 function main(){
     // Add change event to date box. 
@@ -123,13 +142,10 @@ function main(){
     // Form validation event 
     const form = $("#times_form"); 
     form.addEventListener("submit", onSubmit);
+
+    // Exit button
+    const btnExit = $("#btnExit");
+    btnExit.addEventListener("click", onExit); 
 }
 
 document.addEventListener("DOMContentLoaded", main);
-
-// When the user presses "U" it will undo a deletion from the times table.
-document.addEventListener("keypress", (e) => {
-    if (e.key == "u"){
-        onUndo(); 
-    }
-});

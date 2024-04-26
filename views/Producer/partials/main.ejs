@@ -16,10 +16,11 @@
                     <div>
                         <%= d %>
                     </div>
-                <% }) %>
+                    <% }) %>
             </div>
             <div id="month" style="text-align: center;">
-                <div id="arrow"><Strong><</Strong></div>
+                <div id="arrow"><Strong><</Strong>
+                </div>
                 <div><Strong>February 2024</Strong></div>
                 <div id="arrow"><Strong>></Strong></div>
             </div>
@@ -35,17 +36,17 @@
                         <div><Strong>Playlist for DJs</Strong></div>
                         <select name="djs" id="djs">
                             <option value="default">Select DJ</option>
-                            <% djList.forEach((d) => { %>
-                                <option><%= d.name %></option>
+                            <% djs.forEach(d => { %>
+                                <option value="<%= d.name %>"><%= d.name %></option>
                             <% }) %>
                         </select>
                         <div></div>
-                        <div id="song-buttons"><Strong>+</Strong></div>
+                        <div id="song-buttons" onclick="addSongToPlaylist()"><Strong>+</Strong></div>
                         <div></div>
                         <div id="song-buttons"><Strong>-</Strong></div>
                     </div>
                     <table id="song-names">
-                        <% songs.forEach((s, index)=> { %>
+                        <% songs.forEach((s, index) => { %>
                             <tr>
                                 <td>
                                     <%=index+1%>. <strong>Title</strong>: <%= s.title %>
@@ -69,7 +70,7 @@
                         <div><Strong>List of available DJs</Strong></div>
                     </div>
                     <table id="dj-names">
-                        <% djList.forEach((d)=> { %>
+                        <% djs.forEach((d)=> { %>
                             <tr>
                                 <td>
                                     <strong>Name</strong>: <%= d.name %>
@@ -114,7 +115,10 @@
     </article>
 </main>
 
+<script src="./static/Producer/js/songs.js"></script>
 <script>
+
+    // keep track of events
     var eventsList = [];
 
     // adds new events from calendar
@@ -147,27 +151,9 @@
         }
     }
 
-    // function for user profile
+    // function for user profile logo
     function user() {
-        alert('Functionality not available at the moment!');
+        alert('This is just for aesthetic!');
     }
-
-    // // logic for list of songs
-    // document.querySelector("#djs").addEventListener("change", function () {
-    //     let dj = this.value;
-    //     if (dj === "dj1") {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         songsListDJ1();
-    //     }
-    //     else if (dj === "dj2") {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         songsListDJ2();
-    //     }
-    //     else {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         defaultList();
-    //     }
-    // });
-    //djList();
 
 </script>

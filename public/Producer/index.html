@@ -26,7 +26,6 @@
                 <div id="song-search">
                     <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 0.8em; border-radius: 5px;">
                         <div id="playlist" style="padding:0.5em">
-                            <!-- <input id="song" type="text" name="song" placeholder="Search song" style="width: 450px"> -->
                             <div></div>
                             <div><Strong>Playlist for DJs</Strong></div>
                             <select name="djs" id="djs"><option value="default">Select DJ</option></select>
@@ -68,8 +67,6 @@
     </footer>
 
     <script src="./static/Producer/js/songs.js"></script>
-    <script src="./static/Producer/js/podcast.js"></script>
-    <script src="./static/Producer/js/calendar.js"></script>
 
     <script>
         var eventsList = [];
@@ -103,22 +100,7 @@
                 document.querySelector('#events').appendChild(doc);
             }
         }
-
-        // function for podcast search bar
-        function podSearch() {
-            if (!document.forms['pod-form']['pod'].value)
-                alert('Must enter something to search!');
-            else
-                alert('Funtionality not available at the moment!');
-        }
-
-        // function for dj search bar
-        function djSearch() {
-            if (!document.forms['dj-form']['dj'].value)
-                alert('Must enter something to search!');
-            else
-                alert('Funtionality not available at the moment!');
-        }
+        
     </script>
 
 </body>
