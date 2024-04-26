@@ -61,6 +61,11 @@ const handleDefault = (app) => {
     sortTimes(time_slots);
     req.session.time_slots = time_slots;
 
+    // Undo stack
+    if (!req.session.UNDO){
+      req.session.UNDO = []; 
+    }
+
     // Use the date to get all producer notes for today
     let prodNotes = await Note.find({pdate: dateValue});
 
@@ -74,6 +79,7 @@ const handleDefault = (app) => {
     const report = req.session.report; 
     const reportTitle = req.session.reportTitle; 
     
+    // Playlist title
     if (!req.session.playlistTitle){
       req.session.Playlist = null; 
     }
