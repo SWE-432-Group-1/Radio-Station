@@ -117,6 +117,18 @@ function onSubmit(e){
     $("#times_form").submit(); 
 }
 
+// When the user presses "U" it will undo a deletion from the times table.
+document.addEventListener("keypress", (e) => {
+    if (e.key == "u"){
+        onUndo(); 
+    }
+});
+
+// Exit session function. 
+async function onExit(){
+    await fetch("/manager/exit");
+}
+
 // Main function called when document is loaded. 
 function main(){
     // Add change event to date box. 
@@ -126,13 +138,10 @@ function main(){
     // Form validation event 
     const form = $("#times_form"); 
     form.addEventListener("submit", onSubmit);
+
+    // Exit button
+    const btnExit = $("#btnUser");
+    btnExit.addEventListener("click", onExit); 
 }
 
 document.addEventListener("DOMContentLoaded", main);
-
-// When the user presses "U" it will undo a deletion from the times table.
-document.addEventListener("keypress", (e) => {
-    if (e.key == "u"){
-        onUndo(); 
-    }
-});

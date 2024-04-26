@@ -49,6 +49,7 @@ managerRouter.handleAll(app);
 producerRouter.handleAll(app);
 djRouter.handleAll(app);
 
+// Load home page
 app.get("/", (_req, res) => {
   res.sendFile(join(__dirname, "views/Home/index.html"));
 });

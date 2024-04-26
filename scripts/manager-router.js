@@ -11,7 +11,8 @@ const handleAll = (app) => {
   handleForm(app);
   handleTableDelete(app);
   handleTableUndo(app);
-  handleReport(app);   
+  handleReport(app);
+  handleExit(app);    
 };
 
 const handleDefault = (app) => {
@@ -61,11 +62,6 @@ const handleDefault = (app) => {
     sortTimes(time_slots);
     req.session.time_slots = time_slots;
 
-    // Undo stack
-    if (!req.session.UNDO){
-      req.session.UNDO = []; 
-    }
-
     // Use the date to get all producer notes for today
     let prodNotes = await Note.find({pdate: dateValue});
 
@@ -113,7 +109,7 @@ const handleDateChange = (app) => {
   app.post("/manager/newDate", (req, res) => {
     // Get the date obj from the JSON and update values. 
     req.session.selectedDay = new Date(req.body.date);
-    
+
     // Reset times
     req.session.UNDO = []; 
     req.session.overlap = false;
@@ -174,6 +170,10 @@ const handleTableDelete = (app) => {
     const idx = req.params.idx; 
     const slot = time_slots[idx]; 
     // Store it in the undo list
+     // Make sure Undo stack exists
+    if (!req.session.UNDO){
+      req.session.UNDO = []; 
+    }
     req.session.UNDO.push(slot); 
     
     // Remove from the collection
@@ -188,6 +188,11 @@ const handleTableDelete = (app) => {
 const handleTableUndo = (app) => {
   app.get("/manager/table/undo", async (req, res) => {
     // Pop from undo and put into time slots.
+     // Make sure Undo stack exists
+    if (!req.session.UNDO){
+      req.session.UNDO = []; 
+    }
+
     if (req.session.UNDO.length != 0){
       let slot = req.session.UNDO.pop();
       let t = slot.tObject;
@@ -256,6 +261,14 @@ const handleReport = (app) => {
 
     // Redirect to the manager page. 
     res.redirect("/manager"); 
+  });
+}
+
+// Close session
+const handleExit = (app) => {
+  app.get("/manager/exit", async (req, res) =>{
+    req.session.destroy(); 
+    console.log("Session cleared.")
   });
 }
 
