@@ -35,7 +35,7 @@
                         </div>
                         <div><Strong>Playlist for DJs</Strong></div>
                         <select name="djs" id="djs">
-                            <option value="default">Select DJ</option>
+                            <option><%=djName%></option>
                             <% djs.forEach(d => { %>
                                 <option value="<%= d.name %>"><%= d.name %></option>
                             <% }) %>
@@ -43,13 +43,13 @@
                         <div></div>
                         <div id="song-buttons" onclick="addSongToPlaylist()"><Strong>+</Strong></div>
                         <div></div>
-                        <div id="song-buttons"><Strong>-</Strong></div>
+                        <div id="song-buttons" onclick="removeSongFromPlaylist()"><Strong>-</Strong></div>
                     </div>
                     <table id="song-names">
                         <% songs.forEach((s, index) => { %>
                             <tr>
                                 <td>
-                                    <%=index+1%>. <strong>Title</strong>: <%= s.title %>
+                                    <%=index%>. <strong>Title</strong>: <%= s.title %>
                                 </td>
                                 <td>
                                     <strong>Artist</strong>: <%= s.artist %>
