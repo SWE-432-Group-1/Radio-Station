@@ -126,7 +126,11 @@ document.addEventListener("keypress", (e) => {
 
 // Exit session function. 
 async function onExit(){
-    await fetch("/manager/exit");
+    const resp = await fetch("/manager/exit");
+    if (resp.ok){
+        alert("Successfully cleared session.");
+        location.reload(); 
+    }
 }
 
 // Main function called when document is loaded. 

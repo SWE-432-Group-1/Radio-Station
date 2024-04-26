@@ -110,8 +110,7 @@ const handleDateChange = (app) => {
     // Get the date obj from the JSON and update values. 
     req.session.selectedDay = new Date(req.body.date);
 
-    // Reset times
-    req.session.UNDO = []; 
+    // Reset values 
     req.session.overlap = false;
     req.session.validDJ = true; 
 
@@ -196,10 +195,9 @@ const handleTableUndo = (app) => {
     if (req.session.UNDO.length != 0){
       let slot = req.session.UNDO.pop();
       let t = slot.tObject;
-      let p = slot.pObject;
-      const dateValue = req.session.dateValue;  
+      let p = slot.pObject;  
       // Add back to the collection
-      await createEntry(dateValue, t.start, t.end, t.dj, p.name, p.songs);  
+      await createEntry(t.tdate, t.start, t.end, t.dj, p.name, p.songs);  
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -267,8 +265,8 @@ const handleReport = (app) => {
 // Close session
 const handleExit = (app) => {
   app.get("/manager/exit", async (req, res) =>{
-    req.session.destroy(); 
-    console.log("Session cleared.")
+    req.session.destroy();
+    res.redirect("/manager"); 
   });
 }
 
