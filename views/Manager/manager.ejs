@@ -68,7 +68,13 @@
             <table id="report_table">
                 <thead>
                     <tr>
-                        <th colspan="2" id="report_title"><%= reportTitle %></th>
+                        <th colspan="2" id="report_title">
+                            <% if (playlistTitle) { %>
+                                <%= reportTitle %> <br> <%= playlistTitle %>
+                            <% } else {%>
+                                <%= reportTitle %>
+                            <% } %> 
+                        </th>
                     </tr>
                     <tr>
                         <th>Producer Assigned Songs</th>

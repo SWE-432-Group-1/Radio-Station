@@ -73,6 +73,11 @@ const handleDefault = (app) => {
     }
     const report = req.session.report; 
     const reportTitle = req.session.reportTitle; 
+    
+    if (!req.session.playlistTitle){
+      req.session.Playlist = null; 
+    }
+    const playlistTitle = req.session.playlistTitle;
 
     res.render(join(__dirname, "../views/Manager/manager.ejs") , {
       dateValue: dateValue,
@@ -82,7 +87,8 @@ const handleDefault = (app) => {
       validDJ: validDJ,
 
       report: report,
-      reportTitle: reportTitle, 
+      reportTitle: reportTitle,
+      playlistTitle: playlistTitle,  
 
       prodNotes: prodNotes,
     });
@@ -106,7 +112,8 @@ const handleDateChange = (app) => {
 
     // Reset Report
     req.session.report = [];
-    req.session.reportTitle = "Report"; 
+    req.session.reportTitle = "Report";
+    req.session.playlistTitle = null;  
 
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -226,14 +233,17 @@ const handleReport = (app) => {
     }
     req.session.report = rep; 
 
+    // Create new title for report 
     const selectedDay = req.session.selectedDay; 
-    let st = getDateFromTime(time_slots[idx].tObject.start, selectedDay);
-    let et = getDateFromTime(time_slots[idx].tObject.end, selectedDay);
-
-    // Fix title
+    
+    let st = getDateFromTime(slot.tObject.start, selectedDay);
+    let et = getDateFromTime(slot.tObject.end, selectedDay);
     st = st.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     et = et.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    req.session.reportTitle = "Report: " + st + " to " + et; 
+    
+    req.session.playlistTitle = "Playlist: " + slot.pObject.name; 
+    req.session.reportTitle = "Report: " + st + " to " + et;
+     
 
     // Redirect to the manager page. 
     res.redirect("/manager"); 
