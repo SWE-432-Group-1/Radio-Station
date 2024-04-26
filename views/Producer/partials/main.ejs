@@ -31,7 +31,7 @@
                     <div id="playlist" style="padding: 1em;">
                         <div>
                             <input id="song" type="text" name="song" placeholder="Search song" style="width: 90px">
-                            <button type="button">Search</button>
+                            <button type="button" onclick="searchSong()">Search</button>
                         </div>
                         <div><Strong>Playlist for DJs</Strong></div>
                         <select name="djs" id="djs">
@@ -44,6 +44,8 @@
                         <div id="song-buttons" onclick="addSongToPlaylist()"><Strong>+</Strong></div>
                         <div></div>
                         <div id="song-buttons" onclick="removeSongFromPlaylist()"><Strong>-</Strong></div>
+                        <div></div>
+                        <div id="song-buttons" onclick="reset()"><Strong>O</Strong></div>
                     </div>
                     <table id="song-names">
                         <% songs.forEach((s, index) => { %>

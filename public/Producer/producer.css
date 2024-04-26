@@ -44,7 +44,7 @@ button:hover {
 #dj-names tr {
     display: grid;
     box-shadow: 1px 1px 1px 1px #7D53DE;
-    padding: 0.67em;
+    padding: 0.64em;
     border-radius: 5px;
     grid-template-columns: 150px 150px 150px;
 }
@@ -139,14 +139,14 @@ button:hover {
     display: grid;
     grid-template-columns: 220px 160px 160px;
     box-shadow: 1px 1px 1px 1px #7D53DE;
-    padding: 1em;
+    padding: 0.97em;
     border-radius: 5px;
 }
 
 #playlist {
     display: grid;
     font-size: large;
-    grid-template-columns: 210px 190px 100px 10px 20px 0.5px 20px;
+    grid-template-columns: 210px 190px 80px 5px 20px 0.5px 20px 0.5px 20px;
 }
 
 #song-buttons {

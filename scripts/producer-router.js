@@ -5,11 +5,14 @@ import { Dj, Song, Podcast, Playlist } from '../models/schemas.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename)
 
+// handler for all
 const handleAll = (app) => {
   handleDefault(app);
   handleDJPlaylist(app);
   handleAddSong(app);
   handleRemoveSong(app);
+  handleSongSearch(app);
+  handleReset(app);
 };
 
 // list of songs
@@ -20,9 +23,6 @@ let djSelected = false;
 
 // gets list of all djs
 let djs = null;
-
-// list of playlists
-let playlists = null;
 
 // days of the calendar
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "1", "2", "3", "4", "5", "6", "7",
@@ -55,14 +55,10 @@ const handleDefault = (app) => {
     // gets list of all djs
     djs = await Dj.find();
 
-
-    // list of playlists
-    playlists = await Playlist.find();
-
     res.render(join(__dirname, "../views/Producer/pages/index"), {
       djName: djName,
       djs: djs,
-      playlists: playlists,
+      //playlists: playlists,
       days: days,
       podcasts: podcasts,
       songs: songs,
@@ -86,7 +82,7 @@ const handleAddSong = (app) => {
     }
     if (findPlaylist.length == 0 || songlist.length == 0
       || alreadyInPlaylist.length > 0) {
-      console.log('Invalid name or playlist or already in the playlist!');
+      console.log('Invalid song name or playlist or already in the playlist!');
       res.redirect('/producer');
     } else {
       const addSong = {
@@ -113,7 +109,6 @@ const handleAddSong = (app) => {
           res.render(join(__dirname, "../views/Producer/pages/index"), {
             djName: djName,
             djs: djs,
-            playlists: playlists,
             days: days,
             podcasts: podcasts,
             songs: songs,
@@ -124,6 +119,25 @@ const handleAddSong = (app) => {
           console.log(`Failed! ${err}`);
         })
     }
+  });
+}
+
+// re-displays list of all songs
+const handleReset = (app) => {
+  app.get("/producer/reset", async (req, res) => {
+    djName = "Select DJ";
+    songs = [];
+    const allSongs = await Song.find();
+    allSongs.forEach(s => songs.push(s));
+    res.render(join(__dirname, "../views/Producer/pages/index"), {
+      djName: djName,
+      djs: djs,
+      //playlists: playlists,
+      days: days,
+      podcasts: podcasts,
+      songs: songs,
+      userHandler: "user();",
+    });
   });
 }
 
@@ -142,12 +156,12 @@ const handleRemoveSong = (app) => {
     }
     if(findPlaylist.length == 0 || songlist.length == 0
       || alreadyInPlaylist.length == 0) {
-      console.log('Invalid name or playlist or already in the playlist!');
+      console.log('Invalid song name or playlist or not in the playlist!');
       res.redirect('/producer');
     } else {
       const playlistID = findPlaylist[0]._id.toString(); 
       const songId = songlist[0]._id.toString();
-      Playlist.findOneAndUpdate({_id: playlistID}, {$pull: {songs: {_id: songId}}}, {new: true})
+      Playlist.findOneAndUpdate({_id: playlistID}, {$pull:{songs:{_id: songId}}}, {new: true})
         .then(async newPlaylist => {
           console.log('Update success!');
           songs = [];
@@ -163,7 +177,6 @@ const handleRemoveSong = (app) => {
           res.render(join(__dirname, "../views/Producer/pages/index"), {
             djName: djName,
             djs: djs,
-            playlists: playlists,
             days: days,
             podcasts: podcasts,
             songs: songs,
@@ -173,6 +186,30 @@ const handleRemoveSong = (app) => {
         .catch(err => {
           console.log(`Failed! ${err}`);
         })
+    }
+  });
+}
+
+// search for a song
+const handleSongSearch = (app) => {
+  app.get("/producer/search/:song", async (req, res) => {
+    songs = [];
+    const songName = req.params.song;
+    const foundSong = await Song.find({title: songName});
+    if(foundSong.length == 0) {
+      console.log('No such song!');
+      res.redirect('/producer');
+    }
+    else {
+      songs.push(foundSong[0]);
+      res.render(join(__dirname, "../views/Producer/pages/index"), {
+        djName: djName,
+        djs: djs,
+        days: days,
+        podcasts: podcasts,
+        songs: songs,
+        userHandler: "user();",
+      });
     }
   });
 }
@@ -201,7 +238,6 @@ const handleDJPlaylist = (app) => {
       res.render(join(__dirname, "../views/Producer/pages/index"), {
         djName: djName,
         djs: djs,
-        playlists: playlists,
         days: days,
         podcasts: podcasts,
         songs: songs,
