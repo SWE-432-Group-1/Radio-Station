@@ -4,7 +4,8 @@ document.querySelector("#djs").addEventListener("change", async function () {
     const res = await fetch(`/producer/playlist/${dj}`);
     if (res.ok) {
         location.reload();
-    }
+    } else
+        alert("No playlist found!");
 });
 
 // add songs to a playlist
@@ -13,11 +14,14 @@ async function addSongToPlaylist() {
     const songName = prompt('Song name:');
     const index = prompt('Order number:');
     if(!playlistName || !songName || !index)
-        alert('One or more data was not provided!');
+        alert("One or more data was not provided!");
     else {
         const res = await fetch(`/producer/playlist/addsong/${playlistName}/${songName}/${index}`);
-        if(res.ok)
+        if(res.ok) {
+            alert(`Successfully added song ${songName} to the playlist ${playlistName}!`);
             location.reload();
+        } else
+            alert("Unsuccessful!")
     }
 }
 
@@ -26,11 +30,14 @@ async function removeSongFromPlaylist() {
     const playlistName = prompt('Playlist name:');
     const songName = prompt('Song name:');
     if(!playlistName || !songName)
-        alert('One or more data was not provided!');
+        alert("One or more data was not provided!");
     else {
         const res = await fetch(`/producer/playlist/removesong/${playlistName}/${songName}`);
-        if(res.ok)
+        if(res.ok) {
+            alert(`Successfully removed song ${songName} from the playlist ${playlistName}!`);
             location.reload();
+        } else
+            alert("Unsuccessful!")
     }
 }
 
@@ -43,6 +50,8 @@ async function searchSong() {
         const res = await fetch(`/producer/search/${song}`);
         if(res.ok)
             location.reload();
+        else
+            alert("No such song found!");
     }
 }
 

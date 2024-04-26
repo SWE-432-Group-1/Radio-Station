@@ -146,7 +146,7 @@ button:hover {
 #playlist {
     display: grid;
     font-size: large;
-    grid-template-columns: 210px 190px 80px 5px 20px 0.5px 20px 0.5px 20px;
+    grid-template-columns: 210px 170px 90px 5px 20px 1px 20px 1px 20px;
 }
 
 #song-buttons {

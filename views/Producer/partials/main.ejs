@@ -1,7 +1,7 @@
 <main class="container">
     <nav class="nav-bar">
-        <div><img id="web-logo" src="./static/Producer/images/logo.png"></div>
-        <div onclick="<%=userHandler%>" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Producer</div>
+        <div><a href="/"><img id="web-logo" src="./static/Producer/images/logo.png"></a></div>
+        <div onclick="logout()" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Logout</div>
     </nav>
     <article class="body">
         <div class="calendar">
@@ -33,7 +33,7 @@
                             <input id="song" type="text" name="song" placeholder="Search song" style="width: 90px">
                             <button type="button" onclick="searchSong()">Search</button>
                         </div>
-                        <div><Strong>Playlist for DJs</Strong></div>
+                        <div><Strong><%=playlistName%></Strong></div>
                         <select name="djs" id="djs">
                             <option><%=djName%></option>
                             <% djs.forEach(d => { %>
@@ -153,9 +153,13 @@
         }
     }
 
-    // function for user profile logo
-    function user() {
-        alert('This is just for aesthetic!');
+    // "logs out" of a session
+    async function logout() {
+        const res = await fetch('/producer/logout');
+        if(res.ok) {
+            alert('Successfully "logged out"');
+            location.reload();
+        }
     }
 
 </script>
