@@ -5,12 +5,8 @@
 
     <body>
     <main class="container">
-        
-        <nav class="navbar">
-            <img id="logo" src="./static/Manager/imgs/logo.png">
-            <button id="btnUser">Exit</button>
-        </nav>
-    
+        <%- include("./partials/nav"); %>
+
         <article class="calendar">
             <label>Date</label>
             <input id="date_box" type="date" name="selected_date" value="<%= dateValue %>">
