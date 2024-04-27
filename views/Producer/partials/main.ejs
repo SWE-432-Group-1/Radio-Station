@@ -1,7 +1,10 @@
 <main class="container">
     <nav class="nav-bar">
-        <div><img id="web-logo" src="./static/Producer/images/logo.png"></div>
-        <div onclick="<%=userHandler%>" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Producer</div>
+        <div><a href="/"><img id="web-logo" src="./static/Producer/images/logo.png"></a></div>
+        <div id="links"><a href="/dj">DJ Page</a></div>
+        <div id="links"><a href="/producer">Producer Page</a></div>
+        <div id="links"><a href="/manager">Manager Page</a></div>
+        <div onclick="logout()" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Logout</div>
     </nav>
     <article class="body">
         <div class="calendar">
@@ -16,10 +19,11 @@
                     <div>
                         <%= d %>
                     </div>
-                <% }) %>
+                    <% }) %>
             </div>
             <div id="month" style="text-align: center;">
-                <div id="arrow"><Strong><</Strong></div>
+                <div id="arrow"><Strong><</Strong>
+                </div>
                 <div><Strong>February 2024</Strong></div>
                 <div id="arrow"><Strong>></Strong></div>
             </div>
@@ -30,25 +34,27 @@
                     <div id="playlist" style="padding: 1em;">
                         <div>
                             <input id="song" type="text" name="song" placeholder="Search song" style="width: 90px">
-                            <button type="button">Search</button>
+                            <button type="button" onclick="searchSong()">Search</button>
                         </div>
-                        <div><Strong>Playlist for DJs</Strong></div>
+                        <div><Strong><%=playlistName%></Strong></div>
                         <select name="djs" id="djs">
-                            <option value="default">Select DJ</option>
-                            <% djList.forEach((d) => { %>
-                                <option><%= d.name %></option>
+                            <option><%=djName%></option>
+                            <% djs.forEach(d => { %>
+                                <option value="<%= d.name %>"><%= d.name %></option>
                             <% }) %>
                         </select>
                         <div></div>
-                        <div id="song-buttons"><Strong>+</Strong></div>
+                        <div id="song-buttons" onclick="addSongToPlaylist()"><Strong>+</Strong></div>
                         <div></div>
-                        <div id="song-buttons"><Strong>-</Strong></div>
+                        <div id="song-buttons" onclick="removeSongFromPlaylist()"><Strong>-</Strong></div>
+                        <div></div>
+                        <div id="song-buttons" onclick="reset()"><Strong>O</Strong></div>
                     </div>
                     <table id="song-names">
-                        <% songs.forEach((s, index)=> { %>
+                        <% songs.forEach((s, index) => { %>
                             <tr>
                                 <td>
-                                    <%=index+1%>. <strong>Title</strong>: <%= s.title %>
+                                    <%=index%>. <strong>Title</strong>: <%= s.title %>
                                 </td>
                                 <td>
                                     <strong>Artist</strong>: <%= s.artist %>
@@ -69,7 +75,7 @@
                         <div><Strong>List of available DJs</Strong></div>
                     </div>
                     <table id="dj-names">
-                        <% djList.forEach((d)=> { %>
+                        <% djs.forEach((d)=> { %>
                             <tr>
                                 <td>
                                     <strong>Name</strong>: <%= d.name %>
@@ -114,7 +120,10 @@
     </article>
 </main>
 
+<script src="./static/Producer/js/songs.js"></script>
 <script>
+
+    // keep track of events
     var eventsList = [];
 
     // adds new events from calendar
@@ -147,27 +156,13 @@
         }
     }
 
-    // function for user profile
-    function user() {
-        alert('Functionality not available at the moment!');
+    // "logs out" of a session
+    async function logout() {
+        const res = await fetch('/producer/logout');
+        if(res.ok) {
+            alert('Successfully "logged out"');
+            location.reload();
+        }
     }
-
-    // // logic for list of songs
-    // document.querySelector("#djs").addEventListener("change", function () {
-    //     let dj = this.value;
-    //     if (dj === "dj1") {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         songsListDJ1();
-    //     }
-    //     else if (dj === "dj2") {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         songsListDJ2();
-    //     }
-    //     else {
-    //         document.querySelector('#song-names').innerHTML = "";
-    //         defaultList();
-    //     }
-    // });
-    //djList();
 
 </script>
