@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DJ Page</title>
+    <link rel="stylesheet" href="/static/DJ/style.css" />
+  </head>
+  <body>
+    <%- include("./partials/header"); %>
+
+    <div style="display: flex; flex-direction: column; text-align: center">
+      <h1>Select your name:</h1>
+      <% djs.forEach((dj) => { %>
+      <a href="/dj/setdj/<%= dj.id %>"><%= dj.name %></a>
+      <% }); %>
+    </div>
+
+    <%- include("./partials/footer"); %>
+  </body>
+</html>

@@ -86,6 +86,32 @@
           });
       }
 
+      function playedSong(id) {
+        const timeslotId = getCurrentTimeslotId();
+
+        if (!timeslotId) {
+          return;
+        }
+
+        const res = fetch(`/dj/api/playlist/${timeslotId}/${id}/mark_played`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            } else {
+              throw new Error("Error saving song");
+            }
+          })
+          .catch((err) => {
+            console.error("Error saving song", err);
+            alert("Error saving song");
+          });
+      }
+
       function uncheckSongs() {
         const selectedSongs = document.querySelectorAll(
           'input[type="checkbox"]:checked'
@@ -146,6 +172,37 @@
             alert("Error adding songs to playlist");
           });
       }
+
+      function copyPlaylist(playlistId) {
+        const timeslotId = getCurrentTimeslotId();
+
+        if (!timeslotId) {
+          return;
+        }
+
+        const res = fetch(`/dj/api/playlist/${timeslotId}/copy/${playlistId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              uncheckSongs();
+              window.location.reload();
+            } else {
+              throw new Error("Error adding songs to playlist");
+            }
+          })
+          .catch((err) => {
+            console.error("Error adding songs to playlist", err);
+            alert("Error adding songs to playlist");
+          });
+      }
+
+      function onExit() {
+        window.location.href = "/dj/session/exit";
+      }
     </script>
   </head>
 
@@ -161,20 +218,6 @@
           background-color: #494947;
         "
       >
-        <div style="padding: 10px">
-          <div
-            style="
-              width: 98%;
-              text-align: center;
-              background-color: #78e3fd;
-              padding: 10px;
-              font-size: 50px;
-            "
-            id="motd"
-          >
-            <%= motd %>
-          </div>
-        </div>
         <div style="height: 100%; width: 100%; padding: 10px">
           <div
             style="
@@ -237,6 +280,49 @@
                       </li>
                       <% }); %>
                     </ul>
+                    <% if (previousPlaylists.length > 0 &&
+                    previousPlaylists.every((playlist) => playlist.songs.length
+                    > 0)) { %>
+                    <h2 style="text-decoration: underline">
+                      Previous Playlists
+                    </h2>
+                    <div
+                      id="add_record_playlist_list"
+                      style="
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        padding: 1px;
+                      "
+                    >
+                      <% previousPlaylists.forEach((playlist) => { %> <% if
+                      (playlist.songs.length === 0) { return; } %>
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        <h3 style="padding: 0px; font-size: small">
+                          <%= playlist.name %>
+                        </h3>
+                        <p style="font-size: xx-small">12/31/69</p>
+                        <ul>
+                          <% playlist.songs.forEach((song) => { %>
+                          <li><%= song.title %></li>
+                          <% }); %>
+                        </ul>
+                        <button onclick="copyPlaylist('<%= playlist.id %>')">
+                          Add Playlist Songs
+                        </button>
+                      </div>
+                      <% }); %>
+                    </div>
+                    <% } %>
                     <menu
                       style="width: 80%; display: flex; justify-content: end"
                     >
@@ -259,6 +345,9 @@
                   </form>
                 </dialog>
               </div>
+              <h3 style="padding: 0px auto; text-align: center">
+                <%= playlist.name %>
+              </h3>
               <hr style="width: 95%" />
               <table
                 id="playlist_table"
@@ -270,9 +359,10 @@
                   <th id="number_column">#</th>
                   <th>Name</th>
                   <th>Producer Selected</th>
+                  <th>Played</th>
                   <th></th>
                 </tr>
-                <% playlistSongs.forEach((song) => { %>
+                <% playlistSongs.forEach((song, index) => { %>
                 <tr id="<%= `table_row_${song.id}` %>">
                   <td>
                     <svg
@@ -281,7 +371,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      style="cursor: pointer; select: none"
+                      style="cursor: pointer; user-select: none"
                     >
                       <path
                         d="M4 18L20 18"
@@ -303,25 +393,32 @@
                       ></path>
                     </svg>
                   </td>
-                  <td><%= song.position %></td>
+                  <td><%= index + 1 %></td>
                   <td><%= song.title %></td>
-                  <td><%= song.producer %></td>
+                  <td><%= song.producer_created ? 'Yes' : 'No' %></td>
+                  <td><%= song.dj_played ? 'Yes' : 'No' %></td>
                   <td>
                     <button
-                      onclick="document.getElementById('<%= `song_config_${song.id}` %>').showModal()"
+                      onclick="document.getElementById('<%= `song_config_${song.playlistSongId}` %>').showModal()"
                     >
                       ⚙
                     </button>
-                    <dialog id="<%= `song_config_${song.id}` %>">
+                    <dialog id="<%= `song_config_${song.playlistSongId}` %>">
                       <label>Title</label>
                       <div style="display: flex; flex-direction: column">
                         <input
-                          id="<%= `song_config_new_title_${song.id}` %>"
+                          id="<%= `song_config_new_title_${song.playlistSongId}` %>"
                           value="<%= song.title %>"
                           type="text"
                         /><menu>
                           <button
-                            onclick="deleteSong('<%= song.id %>')"
+                            onclick="playedSong('<%= song.playlistSongId %>')"
+                            type="button"
+                          >
+                            Mark Played
+                          </button>
+                          <button
+                            onclick="deleteSong('<%= song.playlistSongId %>')"
                             type="button"
                           >
                             Delete</button
@@ -332,7 +429,7 @@
                           >
                             Save</button
                           ><button
-                            onclick="document.getElementById('<%= `song_config_${song.id}` %>').close(); document.getElementById('<%= `song_config_new_title_${song.id}` %>').value = '<%= song.title %>'"
+                            onclick="document.getElementById('<%= `song_config_${song.playlistSongId}` %>').close(); document.getElementById('<%= `song_config_new_title_${song.playlistSongId}` %>').value = '<%= song.title %>'"
                             type="button"
                             style="margin-left: 2px"
                           >
