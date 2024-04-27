@@ -5,12 +5,8 @@
 
     <body>
     <main class="container">
-        
-        <nav class="navbar">
-            <img id="logo" src="./static/Manager/imgs/logo.png">
-            <button id="btnUser">User</button>
-        </nav>
-    
+        <%- include("./partials/nav"); %>
+
         <article class="calendar">
             <label>Date</label>
             <input id="date_box" type="date" name="selected_date" value="<%= dateValue %>">
@@ -24,7 +20,13 @@
                 <input id="end_time_box" type="time" name="end_time"> 
                 
                 <label>DJ:</label>
-                <input id="DJ_box" type="text" name="DJ">
+                <input id="DJ_box" type="text" name="DJ" list="djNames">
+
+                <datalist id="djNames">
+                    <% DJNames.forEach( (item) => { %>
+                        <option> <%= item.name %> </option>
+                    <% }) %>
+                </datalist>
 
                 <br><br>
 
@@ -68,7 +70,13 @@
             <table id="report_table">
                 <thead>
                     <tr>
-                        <th colspan="2" id="report_title"><%= reportTitle %></th>
+                        <th colspan="2" id="report_title">
+                            <% if (playlistTitle) { %>
+                                <%= reportTitle %> <br> <%= playlistTitle %>
+                            <% } else {%>
+                                <%= reportTitle %>
+                            <% } %> 
+                        </th>
                     </tr>
                     <tr>
                         <th>Producer Assigned Songs</th>

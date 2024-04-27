@@ -1,47 +1,9 @@
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import mongoose from "mongoose";
 import {Timeslot, Dj, Song, Playlist, Note } from '../models/schemas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-const ObjectId = mongoose.Types.ObjectId;
-
-/* All these global variables should become session variables! */
-
-// Date object for the selected day 
-var selectedDay = null;
-var dateValue = null; 
-var dateString = null;  
-
-// List of slot objects. {start, end, dj}.  
-var time_slots = [];
-var overlap = false; 
-
-// Undo Stack
-var UNDO = [];
-
-// Report Table
-var report = [];
-var reportTitle = "Report"; 
-
-// Whether the DJ was found or not. 
-var validDJ = true; 
-
-// List of producer notes
-var prodNotes = [
-  {
-    prod: "Frank",
-    comment: "The DJ did not show up!"
-  },
-  {
-    prod: "Pete",
-    comment: "He's a fun guy, we should try to book him for more times."
-  },
-]
-
-/* End session variables */ 
 
 const handleAll = (app) => {
   handleDefault(app); 
@@ -49,32 +11,50 @@ const handleAll = (app) => {
   handleForm(app);
   handleTableDelete(app);
   handleTableUndo(app);
-  handleReport(app);   
+  handleReport(app);
+  handleExit(app);    
 };
-
 
 const handleDefault = (app) => {
   app.get("/manager", async (req, res) => {
     // Default to today if no value
-    if (selectedDay == null){
-      selectedDay = new Date();
+    if (req.session.selectedDay == null){
+      req.session.selectedDay = new Date();
     }
-    dateValue = selectedDay.toLocaleDateString().split("/");
-    dateValue = dateValue[2] + "-" + dateValue[0].padStart(2, "0") 
-                    + "-" + dateValue[1].padStart(2, "0");
+    const selectedDay = new Date(req.session.selectedDay);
 
-    dateString = selectedDay.toDateString();
+    const dateSplit = selectedDay.toLocaleDateString().split("/");
+    const dateValue = dateSplit[2] + "-" + dateSplit[0].padStart(2, "0") 
+                    + "-" + dateSplit[1].padStart(2, "0");
+    const dateString = selectedDay.toDateString();
+
+    // Set session variables 
+    req.session.dateValue = dateValue; 
+    req.session.dateString = dateString;
+    
+    if (req.session.overlap == null){
+      req.session.overlap = false;
+    }
+    if (req.session.validDJ == null){
+      req.session.validDJ = true;
+    }
+    const overlap = req.session.overlap;
+    const validDJ = req.session.validDJ;
+
+    // Reset variables. 
+    req.session.overlap = false;
+    req.session.validDJ = true;  
     
     // Use the date to get all timeslots for today and store them in time_slots
     let times = await Timeslot.find({tdate: dateValue})
-    time_slots = []
+    let time_slots = []
     for (let t of times){
       let djObject = await Dj.find({_id: t.dj});
       let pListObject = await Playlist.find({timeslot: t._id}); 
       
       let slot = {
-        start: getDateFromTime(t.start),
-        end: getDateFromTime(t.end),
+        start: getDateFromTime(t.start, selectedDay),
+        end: getDateFromTime(t.end, selectedDay),
         dj: djObject[0].name,
 
         tObject: t, 
@@ -82,30 +62,45 @@ const handleDefault = (app) => {
       }; 
       time_slots.push(slot); 
     } 
-    // Sort time_slots. 
-    sortTimes(); 
-
+    // Sort time_slots and store in session. 
+    sortTimes(time_slots);
+    req.session.time_slots = time_slots;
 
     // Use the date to get all producer notes for today
-    prodNotes = await Note.find({pdate: dateValue});
+    let prodNotes = await Note.find({pdate: dateValue});
 
+    // Get the report
+    if (!req.session.report){
+      req.session.report = []; 
+    }
+    if (!req.session.reportTitle){
+      req.session.reportTitle = "Report"; 
+    }
+    const report = req.session.report; 
+    const reportTitle = req.session.reportTitle; 
     
+    // Playlist title
+    if (!req.session.playlistTitle){
+      req.session.Playlist = null; 
+    }
+    const playlistTitle = req.session.playlistTitle;
+
+    const DJNames = await Dj.find().select("name");  
+
     res.render(join(__dirname, "../views/Manager/manager.ejs") , {
       dateValue: dateValue,
       dateString: dateString,
       time_slots: time_slots,
       overlap: overlap,
       validDJ: validDJ,
+      DJNames: DJNames, 
 
       report: report,
-      reportTitle: reportTitle, 
+      reportTitle: reportTitle,
+      playlistTitle: playlistTitle,
 
       prodNotes: prodNotes,
     });
-    
-    // Reset variables. 
-    overlap = false; 
-    validDJ = true; 
 
   });
 }
@@ -113,20 +108,16 @@ const handleDefault = (app) => {
 const handleDateChange = (app) => {
   app.post("/manager/newDate", (req, res) => {
     // Get the date obj from the JSON and update values. 
-    selectedDay = new Date(req.body.date);
-    
-    // Reset times
-    time_slots = [];
-    UNDO = []; 
-    overlap = false;
-    validDJ = true; 
+    req.session.selectedDay = new Date(req.body.date);
 
-    // Reset Producer Notes
-    prodNotes = [];
+    // Reset values 
+    req.session.overlap = false;
+    req.session.validDJ = true; 
 
     // Reset Report
-    report = [];
-    reportTitle = "Report"; 
+    req.session.report = [];
+    req.session.reportTitle = "Report";
+    req.session.playlistTitle = null;  
 
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -141,21 +132,30 @@ const handleForm = (app) => {
     let pName = req.body.pName; 
 
     // Check that the DJ is valid
-    validDJ = true;
+    let valid = true;
     const foundDjs = await Dj.find({name: new RegExp('^'+dj+"$", "i")}); 
     if (foundDjs.length <= 0){
-      validDJ = false;
+      valid = false;
+      req.session.validDJ = valid;
       res.redirect("/manager");
       return; 
     }
+    req.session.validDJ = valid;
     
+    const selectedDay = req.session.selectedDay;
+    const dateValue = req.session.dateValue;
+    const time_slots = req.session.time_slots; 
+
     // Check for overlaps with other time slots. 
-    overlap = timeOverlap(getDateFromTime(startTime), getDateFromTime(endTime)); 
+    let overlap = timeOverlap(getDateFromTime(startTime, selectedDay), 
+                            getDateFromTime(endTime, selectedDay), 
+                            time_slots, selectedDay); 
     
     // No overlap, make the slot
     if (!overlap){ 
-      await createEntry(startTime, endTime, foundDjs[0]._id, pName, []);
+      await createEntry(dateValue, startTime, endTime, foundDjs[0]._id, pName, []);
     }
+    req.session.overlap = overlap; 
 
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -164,11 +164,16 @@ const handleForm = (app) => {
 
 const handleTableDelete = (app) => {
   app.get("/manager/table/delete/:idx", async (req, res) => {
-    // Get the index 
+    // Get the index
+    const time_slots = req.session.time_slots;  
     const idx = req.params.idx; 
     const slot = time_slots[idx]; 
     // Store it in the undo list
-    UNDO.push(slot); 
+     // Make sure Undo stack exists
+    if (!req.session.UNDO){
+      req.session.UNDO = []; 
+    }
+    req.session.UNDO.push(slot); 
     
     // Remove from the collection
     await Timeslot.deleteOne({_id: slot.tObject._id});
@@ -182,12 +187,17 @@ const handleTableDelete = (app) => {
 const handleTableUndo = (app) => {
   app.get("/manager/table/undo", async (req, res) => {
     // Pop from undo and put into time slots.
-    if (UNDO.length != 0){
-      let slot = UNDO.pop();
+     // Make sure Undo stack exists
+    if (!req.session.UNDO){
+      req.session.UNDO = []; 
+    }
+
+    if (req.session.UNDO.length != 0){
+      let slot = req.session.UNDO.pop();
       let t = slot.tObject;
-      let p = slot.pObject; 
+      let p = slot.pObject;  
       // Add back to the collection
-      await createEntry(t.start, t.end, t.dj, p.name, p.songs);  
+      await createEntry(t.tdate, t.start, t.end, t.dj, p.name, p.songs);  
     }
     // Redirect to the manager page. 
     res.redirect("/manager"); 
@@ -198,6 +208,7 @@ const handleTableUndo = (app) => {
 const handleReport = (app) => {
   app.get("/manager/report/:idx", async (req, res) => {
     const idx = req.params.idx; 
+    const time_slots = req.session.time_slots;
     const slot = time_slots[idx]; 
     const songs = slot.pObject.songs;  
 
@@ -212,11 +223,11 @@ const handleReport = (app) => {
       const songArtist = song[0].artist; 
       const songString = songTitle + " by " + songArtist 
 
-      if (item.producer_created == true){
+      if (item.producer_created){
         prodSongs.push( pCounter + ". " + songString);
         pCounter += 1; 
       }
-      if (item.dj_played == true){
+      if (item.dj_played){
         djSongs.push( dCounter + ". " + songString);
         dCounter += 1
       }
@@ -225,20 +236,36 @@ const handleReport = (app) => {
       makeSameSize(prodSongs, djSongs); 
     }
 
-    report = []
+    let rep = []
     for (let i=0; i < prodSongs.length; i++){
-      report.push({
+      rep.push({
         prod: prodSongs[i],
         dj: djSongs[i]
       });
     }
+    req.session.report = rep; 
 
-    // Fix title
-    let st = time_slots[idx].start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    let et = time_slots[idx].end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    reportTitle = "Report: " + st + " to " + et; 
+    // Create new title for report 
+    const selectedDay = req.session.selectedDay; 
+    
+    let st = getDateFromTime(slot.tObject.start, selectedDay);
+    let et = getDateFromTime(slot.tObject.end, selectedDay);
+    st = st.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    et = et.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    req.session.playlistTitle = "Playlist: " + slot.pObject.name; 
+    req.session.reportTitle = "Report: " + st + " to " + et;
+     
 
     // Redirect to the manager page. 
+    res.redirect("/manager"); 
+  });
+}
+
+// Close session
+const handleExit = (app) => {
+  app.get("/manager/exit", async (req, res) =>{
+    req.session.destroy();
     res.redirect("/manager"); 
   });
 }
@@ -251,9 +278,8 @@ export default {
 
 /* Helper functions Below */
 
-
 // Ensure end time is after start time
-function getDateFromTime(time){
+function getDateFromTime(time, selectedDay){
   let timeSplit = time.split(":");
   let d = new Date(selectedDay); 
   d.setHours(timeSplit[0]);
@@ -263,11 +289,12 @@ function getDateFromTime(time){
 }
 
 // Check for overlapping times
-function timeOverlap(st_date, et_date){
+function timeOverlap(st_date, et_date, time_slots, selectedDay){
   let overlap = false; 
   for (let slot of time_slots){
-    const otherSt = slot.start.getTime();
-    const otherEt = slot.end.getTime();
+    const otherSt = getDateFromTime(slot.tObject.start, selectedDay).getTime();
+    const otherEt = getDateFromTime(slot.tObject.end, selectedDay).getTime();
+    
     if (st_date.getTime() >= otherSt && st_date.getTime() <= otherEt){
         // Event being added starts during this one
         overlap = true;
@@ -289,7 +316,7 @@ function timeOverlap(st_date, et_date){
 }
 
 // Sort all of the times. 
-function sortTimes(){
+function sortTimes(time_slots){
   // Use the sort function 
   let sorted = time_slots.sort(function (a, b){
     // Sort by the start times
@@ -306,7 +333,7 @@ function sortTimes(){
 Create a Timeslot and Playlist entry. 
 The relationship is 1:1 
 */
-async function createEntry(start, end, djID, pName, pSongs){
+async function createEntry(dateValue, start, end, djID, pName, pSongs){
   const createdSlot = await Timeslot.create({
     tdate: dateValue, 
     start: start, 

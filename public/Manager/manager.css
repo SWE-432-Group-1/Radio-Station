@@ -19,7 +19,7 @@ body{
     display: grid;  
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 10% 1fr 2fr 2fr 0.5fr;
+    grid-template-rows: 1fr 1fr 3fr 2fr 0.5fr;
     grid-template-areas: "nav nav"
                         "cal report"
                         "times report"
@@ -29,7 +29,7 @@ body{
 }
 
 #logo{
-    height: 80%; 
+    height: 4em; 
 }
 
 .navbar{
@@ -129,11 +129,15 @@ body{
     color: #EEF8FF; 
 }
 
-#btnUser{
+#btnExit{
     border-radius: 50%; 
     background-color: #EEF8FF;
     color: black;
     padding: 1em;  
+}
+
+button:hover{
+    cursor: pointer;
 }
 
 #btnUndo{
