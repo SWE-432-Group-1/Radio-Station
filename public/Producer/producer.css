@@ -7,12 +7,39 @@ body {
 
 .nav-bar {
     display: flex;
-    column-gap: 980px;
+    column-gap: 170px;
     align-items: center;
     background-color: #D1F5FF;
     border-radius: 2px;
     box-shadow: 1px 1px 1px 1px #7D53DE;
     padding: 0.5em;
+}
+
+#links {
+    background-color: #78E3FD;
+    padding: 0.5em;
+    border-radius: 20px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+#links a{
+    text-decoration: none !important;
+}
+
+#links a:visited{
+    text-decoration: none !important;
+    color: black;
+}
+
+#links:hover {
+    box-shadow: 1px 1px 2px black;
+    background-color: #7D53DE;
+}
+
+#links:active {
+    background-color: #7D53DE;
+    transform: translateY(1px);
 }
 
 .body {

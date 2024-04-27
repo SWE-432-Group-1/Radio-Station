@@ -39,7 +39,11 @@ const handleDefault = (app) => {
       req.session.validDJ = true;
     }
     const overlap = req.session.overlap;
-    const validDJ = req.session.validDJ;  
+    const validDJ = req.session.validDJ;
+
+    // Reset variables. 
+    req.session.overlap = false;
+    req.session.validDJ = true;
     
     // Use the date to get all timeslots for today and store them in time_slots
     let times = await Timeslot.find({tdate: dateValue})

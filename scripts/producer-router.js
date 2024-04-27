@@ -94,7 +94,7 @@ const handleAddSong = (app) => {
     const alreadyInPlaylist = [];
     // looks to see if the song is already in the playlist
     for (let s of findPlaylist[0].songs) {
-      if (s._id.toString() == songlist[0]._id.toString())
+      if (s.song.toString() == songlist[0]._id.toString())
         alreadyInPlaylist.push(s);
     }
     if (findPlaylist.length == 0 || songlist.length == 0
@@ -104,7 +104,7 @@ const handleAddSong = (app) => {
     } else {
       // add song to the playlist
       const addSong = {
-        _id: songlist[0]._id.toString(),
+        song: songlist[0]._id.toString(),
         producer_created: true,
         dj_played: false
       };
@@ -119,10 +119,8 @@ const handleAddSong = (app) => {
           var temp = [];
           for (let s of foundSongs) {
             for (let i = 0; i < newPlaylist.songs.length; i++) {
-              if (s._id.toString() == newPlaylist.songs[i]._id.toString()) {
+              if (s._id.toString() == newPlaylist.songs[i].song.toString())
                 temp.splice(i, 0, s);
-                i++;
-              }
             }
           }
           req.session.songs = temp;
@@ -191,9 +189,8 @@ const handleRemoveSong = (app) => {
     const alreadyInPlaylist = [];
     // check if the song actually in the playlist
     for(let s of findPlaylist[0].songs) {
-      if(s._id.toString() == songlist[0]._id.toString()) {
+      if(s.song.toString() == songlist[0]._id.toString())
         alreadyInPlaylist.push(s);
-      }
     }
     if(findPlaylist.length == 0 || songlist.length == 0
       || alreadyInPlaylist.length == 0) {
@@ -203,7 +200,7 @@ const handleRemoveSong = (app) => {
       // remove the song from the playlist
       const playlistID = findPlaylist[0]._id.toString(); 
       const songId = songlist[0]._id.toString();
-      Playlist.findOneAndUpdate({_id: playlistID}, {$pull:{songs:{_id: songId}}}, {new: true})
+      Playlist.findOneAndUpdate({_id: playlistID}, {$pull:{songs:{song: songId}}}, {new: true})
         .then(async newPlaylist => {
           req.session.songs = [];
           songs = req.session.songs;
@@ -211,10 +208,8 @@ const handleRemoveSong = (app) => {
           var temp = []
           for (let s of foundSongs) {
             for (let i = 0; i < newPlaylist.songs.length; i++) {
-              if (s._id.toString() == newPlaylist.songs[i]._id.toString()) {
+              if (s._id.toString() == newPlaylist.songs[i].song.toString())
                 temp.splice(i, 0, s);
-                i++;
-              }
             }
           }
           req.session.songs = temp;
@@ -296,10 +291,8 @@ const handleDJPlaylist = (app) => {
       var temp = [];
       for (let s of foundSongs) {
         for (let i = 0; i < playlistbyDjId.songs.length; i++) {
-          if (s._id.toString() == playlistbyDjId.songs[i]._id.toString()) {
+          if (s._id.toString() == playlistbyDjId.songs[i].song.toString())
             temp.splice(i, 0, s);
-            i++;
-          }
         }
       }
       req.session.songs = temp;
