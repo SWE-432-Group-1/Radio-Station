@@ -19,25 +19,12 @@
           return;
         }
 
-        const timeslotSplit = selectedTimeslot.id.split("_");
-
-        if (timeslotSplit.length !== 2) {
-          alert(
-            "There was an error selecting the current timeslot. Please refresh and try again (ID was malformed)"
-          );
+        if (!selectedTimeslot.id.startsWith("timeslot_")) {
+          alert("Error selecting timeslot (malformed timeslot ID)");
           return;
         }
 
-        const timeslotIdRaw = timeslotSplit[1];
-
-        const timeslotId = parseInt(timeslotIdRaw);
-
-        if (isNaN(timeslotId)) {
-          alert(
-            "There was an error selecting the current timeslot. Please refresh and try again (ID wasn't number)"
-          );
-          return;
-        }
+        const timeslotId = selectedTimeslot.id.substring(9);
 
         return timeslotId;
       }
@@ -98,6 +85,124 @@
             alert("Error saving song");
           });
       }
+
+      function playedSong(id) {
+        const timeslotId = getCurrentTimeslotId();
+
+        if (!timeslotId) {
+          return;
+        }
+
+        const res = fetch(`/dj/api/playlist/${timeslotId}/${id}/mark_played`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            } else {
+              throw new Error("Error saving song");
+            }
+          })
+          .catch((err) => {
+            console.error("Error saving song", err);
+            alert("Error saving song");
+          });
+      }
+
+      function uncheckSongs() {
+        const selectedSongs = document.querySelectorAll(
+          'input[type="checkbox"]:checked'
+        );
+
+        selectedSongs.forEach((song) => {
+          song.checked = false;
+        });
+      }
+
+      function cancelAddSongs() {
+        const dialog = document.querySelector("dialog#add_playlist");
+        uncheckSongs();
+        dialog.close();
+      }
+
+      function confirmAddSongs() {
+        const selectedSongs = document.querySelectorAll(
+          'input[type="checkbox"]:checked'
+        );
+
+        const selectedSongIdsRaw = Array.from(selectedSongs).map(
+          (song) => song.id
+        );
+
+        if (selectedSongIdsRaw.some((id) => !id.startsWith("song_"))) {
+          alert(
+            "There was an error selecting the current song. Please refresh and try again (ID was malformed)"
+          );
+          return;
+        }
+
+        const selectedSongIds = selectedSongIdsRaw.map((id) => id.substring(5));
+
+        const timeslotId = getCurrentTimeslotId();
+
+        if (!timeslotId) {
+          return;
+        }
+
+        const res = fetch(`/dj/api/playlist/${timeslotId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ songs: selectedSongIds }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              uncheckSongs();
+              window.location.reload();
+            } else {
+              throw new Error("Error adding songs to playlist");
+            }
+          })
+          .catch((err) => {
+            console.error("Error adding songs to playlist", err);
+            alert("Error adding songs to playlist");
+          });
+      }
+
+      function copyPlaylist(playlistId) {
+        const timeslotId = getCurrentTimeslotId();
+
+        if (!timeslotId) {
+          return;
+        }
+
+        const res = fetch(`/dj/api/playlist/${timeslotId}/copy/${playlistId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              uncheckSongs();
+              window.location.reload();
+            } else {
+              throw new Error("Error adding songs to playlist");
+            }
+          })
+          .catch((err) => {
+            console.error("Error adding songs to playlist", err);
+            alert("Error adding songs to playlist");
+          });
+      }
+
+      function onExit() {
+        window.location.href = "/dj/session/exit";
+      }
     </script>
   </head>
 
@@ -113,20 +218,6 @@
           background-color: #494947;
         "
       >
-        <div style="padding: 10px">
-          <div
-            style="
-              width: 98%;
-              text-align: center;
-              background-color: #78e3fd;
-              padding: 10px;
-              font-size: 50px;
-            "
-            id="motd"
-          >
-            <%= motd %>
-          </div>
-        </div>
         <div style="height: 100%; width: 100%; padding: 10px">
           <div
             style="
@@ -174,14 +265,24 @@
                 </button>
                 <dialog id="add_playlist">
                   <form method="dialog">
-                    <input type="text" style="width: 90%" />
-                    <br />
                     <h2 style="text-decoration: underline">Songs</h2>
                     <ul id="add_record_song_list" style="font-size: large">
-                      <li>Song 1</li>
-                      <li>Song 2</li>
-                      <li>Song 3</li>
+                      <% allSongs.forEach((song) => { %>
+                      <li>
+                        <input
+                          type="checkbox"
+                          id="<%= `song_${song.id}` %>"
+                          name="<%= `song_${song.id}` %>"
+                        />
+                        <label for="<%= `song_${song.id}` %>"
+                          ><%= song.title %></label
+                        >
+                      </li>
+                      <% }); %>
                     </ul>
+                    <% if (previousPlaylists.length > 0 &&
+                    previousPlaylists.every((playlist) => playlist.songs.length
+                    > 0)) { %>
                     <h2 style="text-decoration: underline">
                       Previous Playlists
                     </h2>
@@ -196,6 +297,8 @@
                         padding: 1px;
                       "
                     >
+                      <% previousPlaylists.forEach((playlist) => { %> <% if
+                      (playlist.songs.length === 0) { return; } %>
                       <div
                         style="
                           display: flex;
@@ -205,60 +308,36 @@
                         "
                       >
                         <h3 style="padding: 0px; font-size: small">
-                          Playlist 1
+                          <%= playlist.name %>
                         </h3>
                         <p style="font-size: xx-small">12/31/69</p>
                         <ul>
-                          <li>Song 1</li>
-                          <li>Song 2</li>
-                          <li>Song 3</li>
+                          <% playlist.songs.forEach((song) => { %>
+                          <li><%= song.title %></li>
+                          <% }); %>
                         </ul>
+                        <button onclick="copyPlaylist('<%= playlist.id %>')">
+                          Add Playlist Songs
+                        </button>
                       </div>
-                      <div
-                        style="
-                          display: flex;
-                          flex-direction: column;
-                          align-items: center;
-                          justify-content: center;
-                        "
-                      >
-                        <h3 style="padding: 0px; font-size: small">
-                          Playlist 2
-                        </h3>
-                        <p style="font-size: xx-small">12/31/69</p>
-                        <ul>
-                          <li>Song 1</li>
-                          <li>Song 2</li>
-                          <li>Song 3</li>
-                        </ul>
-                      </div>
-                      <div
-                        style="
-                          display: flex;
-                          flex-direction: column;
-                          align-items: center;
-                          justify-content: center;
-                        "
-                      >
-                        <h3 style="padding: 0px; font-size: small">
-                          Playlist 3
-                        </h3>
-                        <p style="font-size: xx-small">12/31/69</p>
-                        <ul>
-                          <li>Song 1</li>
-                          <li>Song 2</li>
-                          <li>Song 3</li>
-                        </ul>
-                      </div>
+                      <% }); %>
                     </div>
+                    <% } %>
                     <menu
                       style="width: 80%; display: flex; justify-content: end"
                     >
-                      <button id="cancel_button" value="cancel">Cancel</button>
                       <button
-                        id="ok_button"
+                        id="add_song_cancel_button"
+                        value="cancel"
+                        onclick="cancelAddSongs()"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        id="add_song_ok_button"
                         style="margin-left: 2px"
                         value="ok"
+                        onclick="confirmAddSongs()"
                       >
                         OK
                       </button>
@@ -266,6 +345,9 @@
                   </form>
                 </dialog>
               </div>
+              <h3 style="padding: 0px auto; text-align: center">
+                <%= playlist.name %>
+              </h3>
               <hr style="width: 95%" />
               <table
                 id="playlist_table"
@@ -277,9 +359,10 @@
                   <th id="number_column">#</th>
                   <th>Name</th>
                   <th>Producer Selected</th>
+                  <th>Played</th>
                   <th></th>
                 </tr>
-                <% playlist.forEach((song) => { %>
+                <% playlistSongs.forEach((song, index) => { %>
                 <tr id="<%= `table_row_${song.id}` %>">
                   <td>
                     <svg
@@ -288,7 +371,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      style="cursor: pointer; select: none"
+                      style="cursor: pointer; user-select: none"
                     >
                       <path
                         d="M4 18L20 18"
@@ -310,36 +393,43 @@
                       ></path>
                     </svg>
                   </td>
-                  <td><%= song.position %></td>
+                  <td><%= index + 1 %></td>
                   <td><%= song.title %></td>
-                  <td><%= song.producer %></td>
+                  <td><%= song.producer_created ? 'Yes' : 'No' %></td>
+                  <td><%= song.dj_played ? 'Yes' : 'No' %></td>
                   <td>
                     <button
-                      onclick="document.getElementById('<%= `song_config_${song.id}` %>').showModal()"
+                      onclick="document.getElementById('<%= `song_config_${song.playlistSongId}` %>').showModal()"
                     >
                       ⚙
                     </button>
-                    <dialog id="<%= `song_config_${song.id}` %>">
+                    <dialog id="<%= `song_config_${song.playlistSongId}` %>">
                       <label>Title</label>
                       <div style="display: flex; flex-direction: column">
                         <input
-                          id="<%= `song_config_new_title_${song.id}` %>"
+                          id="<%= `song_config_new_title_${song.playlistSongId}` %>"
                           value="<%= song.title %>"
                           type="text"
                         /><menu>
                           <button
-                            onclick="deleteSong(<%= song.id %>)"
+                            onclick="playedSong('<%= song.playlistSongId %>')"
+                            type="button"
+                          >
+                            Mark Played
+                          </button>
+                          <button
+                            onclick="deleteSong('<%= song.playlistSongId %>')"
                             type="button"
                           >
                             Delete</button
                           ><button
-                            onclick="saveSong(<%= song.id %>)"
+                            onclick="saveSong('<%= song.id %>')"
                             type="button"
                             style="margin-left: 2px"
                           >
                             Save</button
                           ><button
-                            onclick="document.getElementById('<%= `song_config_${song.id}` %>').close(); document.getElementById('<%= `song_config_new_title_${song.id}` %>').value = '<%= song.title %>'"
+                            onclick="document.getElementById('<%= `song_config_${song.playlistSongId}` %>').close(); document.getElementById('<%= `song_config_new_title_${song.playlistSongId}` %>').value = '<%= song.title %>'"
                             type="button"
                             style="margin-left: 2px"
                           >

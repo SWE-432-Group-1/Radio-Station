@@ -38,22 +38,7 @@ const createDraggableTable = (table_id) => {
           console.error("Failed to split row ID", row, rowIdRaw, rowIdSplit);
           return null;
         }
-        const rowId = rowIdSplit[1];
-        const rowNum = parseInt(rowId);
-
-        if (isNaN(rowNum)) {
-          console.error(
-            "Failed to parse row number",
-            row,
-            rowIdRaw,
-            rowIdSplit,
-            rowId,
-            rowNum
-          );
-          return null;
-        }
-
-        return rowNum;
+        return rowIdSplit[1];
       })
       .filter((row) => row !== null);
 
