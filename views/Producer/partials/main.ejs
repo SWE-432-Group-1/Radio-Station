@@ -1,0 +1,168 @@
+<main class="container">
+    <nav class="nav-bar">
+        <div><a href="/"><img id="web-logo" src="./static/Producer/images/logo.png"></a></div>
+        <div id="links"><a href="/dj">DJ Page</a></div>
+        <div id="links"><a href="/producer">Producer Page</a></div>
+        <div id="links"><a href="/manager">Manager Page</a></div>
+        <div onclick="logout()" id="user" style="border-radius: 50%; width: 70px; height: 70px;">Logout</div>
+    </nav>
+    <article class="body">
+        <div class="calendar">
+            <div style="padding:1em; font-size:large;"><Strong>My events:</Strong></div>
+            <div id="events"></div>
+            <div style="display: grid; grid-template-columns: 145px 200px;">
+                <div></div>
+                <div style="display: center; padding:0.5em; font-size:2em;"><Strong>Calendar</Strong></div>
+            </div>
+            <div id="calendar-body">
+                <% days.forEach((d)=> { %>
+                    <div>
+                        <%= d %>
+                    </div>
+                    <% }) %>
+            </div>
+            <div id="month" style="text-align: center;">
+                <div id="arrow"><Strong><</Strong>
+                </div>
+                <div><Strong>February 2024</Strong></div>
+                <div id="arrow"><Strong>></Strong></div>
+            </div>
+        </div>
+        <div class="song-list">
+            <div id="song-search">
+                <form style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 0.8em; border-radius: 5px;">
+                    <div id="playlist" style="padding: 1em;">
+                        <div>
+                            <input id="song" type="text" name="song" placeholder="Search song" style="width: 90px">
+                            <button type="button" onclick="searchSong()">Search</button>
+                        </div>
+                        <div><Strong><%=playlistName%></Strong></div>
+                        <select name="djs" id="djs">
+                            <option><%=djName%></option>
+                            <% djs.forEach(d => { %>
+                                <option value="<%= d.name %>"><%= d.name %></option>
+                            <% }) %>
+                        </select>
+                        <div></div>
+                        <div id="song-buttons" onclick="addSongToPlaylist()"><Strong>+</Strong></div>
+                        <div></div>
+                        <div id="song-buttons" onclick="removeSongFromPlaylist()"><Strong>-</Strong></div>
+                        <div></div>
+                        <div id="song-buttons" onclick="reset()"><Strong>O</Strong></div>
+                    </div>
+                    <table id="song-names">
+                        <% songs.forEach((s, index) => { %>
+                            <tr>
+                                <td>
+                                    <%=index%>. <strong>Title</strong>: <%= s.title %>
+                                </td>
+                                <td>
+                                    <strong>Artist</strong>: <%= s.artist %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </article>
+    <article class="body">
+        <div class="dj-list">
+            <div id="dj-search">
+                <form name="dj-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div id="list" style="padding: 1em;">
+                        <div></div>
+                        <div><Strong>List of available DJs</Strong></div>
+                    </div>
+                    <table id="dj-names">
+                        <% djs.forEach((d)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= d.name %>
+                                </td>
+                                <td>
+                                    <strong>Experience</strong>: <%= d.experience %>
+                                </td>
+                                <td>
+                                    <strong>Availability</strong>: <%= d.availability %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="pod-list">
+            <div id="pod-search">
+                <form name="pod-form" style="box-shadow: 3px 3px 3px 3px #7D53DE; padding: 1em; border-radius: 5px;">
+                    <div id="list-2" style="padding: 1em;">
+                        <div></div>
+                        <div><Strong>My favorite podcasts</Strong></div>
+                    </div>
+                    <table id="pods">
+                        <% podcasts.forEach((p)=> { %>
+                            <tr>
+                                <td>
+                                    <strong>Name</strong>: <%= p.name %>
+                                </td>
+                                <td>
+                                    <strong>Episode</strong>: <%= p.episode %>
+                                </td>
+                                <td>
+                                    <strong>Duration</strong>: <%= p.duration %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </article>
+</main>
+
+<script src="./static/Producer/js/songs.js"></script>
+<script>
+
+    // keep track of events
+    var eventsList = [];
+
+    // adds new events from calendar
+    document.querySelectorAll('#calendar-body div:nth-child(n+8)').forEach((e) => {
+        e.addEventListener('click', function () {
+            const name = prompt('Event Name:');
+            if (!name)
+                // no event name was given
+                alert('No event name was provided!');
+            if (eventsList.length >= 7)
+                // events exceeds the limit
+                alert('Too many events have been added!');
+            if (name && eventsList.length < 7) {
+                // only 7 events can be added for now
+                eventsList.push({ event: name, date: e.innerText });
+                document.querySelector('#events').innerHTML = "";
+                printEvents();
+                alert(`Event "${name}" added to events!`);
+            }
+        });
+    });
+
+    // display events
+    function printEvents() {
+        for (let e of eventsList) {
+            const doc = document.createElement('div');
+            doc.innerHTML = e.event;
+            doc.onclick = function () { alert(`You have a ${e.event} on February ${e.date}, 2024`) };
+            document.querySelector('#events').appendChild(doc);
+        }
+    }
+
+    // "logs out" of a session
+    async function logout() {
+        const res = await fetch('/producer/logout');
+        if(res.ok) {
+            alert('Successfully "logged out"');
+            location.reload();
+        }
+    }
+
+</script>

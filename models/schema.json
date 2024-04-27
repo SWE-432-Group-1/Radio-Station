@@ -2,15 +2,23 @@
   {
     "name": "timeslots",
     "bsonType": "object",
-    "required": ["start", "end"],
+    "required": ["tdate","start","end","dj"],
     "properties": {
+      "tdate": {
+        "bsonType": "string",
+        "description": "Date of timeslot, yyyy-mm-dd"
+      },
       "start": {
-        "bsonType": "date",
-        "description": "Start time of the timeslot"
+        "bsonType": "string",
+        "description": "Start time, format = HH:MM (military time)"
       },
       "end": {
-        "bsonType": "date",
-        "description": "End time of the timeslot"
+        "bsonType": "string",
+        "description": "End time, format = HH:MM (military time)"
+      },
+      "dj": {
+        "bsonType": "objectId",
+        "description": "Dj for this timeslot"
       }
     }
   },
@@ -22,13 +30,21 @@
       "name": {
         "bsonType": "string",
         "description": "Name of the DJ"
+      },
+      "experience": {
+        "bsonType": "string",
+        "description": "Experience of the DJ"
+      },
+      "availability": {
+        "bsonType": "string",
+        "description": "Availability of the DJ"
       }
     }
   },
   {
     "name": "songs",
     "bsonType": "object",
-    "required": ["title", "artist"],
+    "required": ["title","artist"],
     "properties": {
       "title": {
         "bsonType": "string",
@@ -43,7 +59,7 @@
   {
     "name": "playlists",
     "bsonType": "object",
-    "required": ["name", "djs"],
+    "required": ["name","dj","timeslot"],
     "properties": {
       "name": {
         "bsonType": "string",
@@ -58,7 +74,7 @@
         "description": "List of IDs for songs in the playlist",
         "items": {
           "bsonType": "object",
-          "required": ["song", "producer_created"],
+          "required": ["song", "producer_created", "dj_played"],
           "properties": {
             "song": {
               "bsonType": "objectId",
@@ -67,16 +83,24 @@
             "producer_created": {
               "bsonType": "bool",
               "description": "Whether the producer created this song"
+            },
+            "dj_played": {
+              "bsonType": "bool",
+              "description": "Whether the dj played this song"
             }
           }
         }
+      },
+      "timeslot": {
+        "bsonType": "objectId",
+        "description": "ID of the timeslot this playlist is assigned to"
       }
     }
   },
   {
     "name": "timeslot_playlists",
     "bsonType": "object",
-    "required": ["timeslot", "playlist"],
+    "required": ["timeslot","playlist"],
     "properties": {
       "timeslot": {
         "bsonType": "objectId",
@@ -86,6 +110,44 @@
       "playlist": {
         "bsonType": "objectId",
         "description": "Playlist to be played during the timeslot"
+      }
+    }
+  },
+  {
+    "name": "notes",
+    "bsonType": "object",
+    "required": ["pdate", "comment", "prod"],
+    "properties": {
+      "pdate": {
+        "bsonType": "string",
+        "description": "Date for the note, format = yyyy-mm-dd"
+      },
+      "comment": {
+        "bsonType": "string",
+        "description": "Comments about the day"
+      }, 
+      "prod": {
+        "bsonType": "string",
+        "description": "Name of the producer leaving the note"
+      }
+    }
+  },
+  {
+    "name": "podcasts",
+    "bsonType": "object",
+    "required": ["name", "episode", "duration"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name of the podcast"
+      },
+      "episode": {
+        "bsonType": "string",
+        "description": "Episode of the podcast"
+      },
+      "duration": {
+        "bsonType": "string",
+        "description": "Duration of the podcast episode"
       }
     }
   }

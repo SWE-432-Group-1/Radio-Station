@@ -5,12 +5,8 @@
 
     <body>
     <main class="container">
-        
-        <nav class="navbar">
-            <img id="logo" src="./static/Manager/imgs/logo.png">
-            <button id="btnUser">User</button>
-        </nav>
-    
+        <%- include("./partials/nav"); %>
+
         <article class="calendar">
             <label>Date</label>
             <input id="date_box" type="date" name="selected_date" value="<%= dateValue %>">
@@ -20,14 +16,23 @@
             <form id="times_form" method="POST" action="/manager/form">
                 <button type="submit" id="form_submit">+</button>
                 <label>Time:</label>
-                
                 <input id="start_time_box" type="time" name="start_time"> to
                 <input id="end_time_box" type="time" name="end_time"> 
                 
                 <label>DJ:</label>
-                <input id="DJ_box" type="text" name="DJ">
+                <input id="DJ_box" type="text" name="DJ" list="djNames">
+
+                <datalist id="djNames">
+                    <% DJNames.forEach( (item) => { %>
+                        <option> <%= item.name %> </option>
+                    <% }) %>
+                </datalist>
+
+                <br><br>
+
+                <label>Playlist Name:</label>
+                <input id="playlist_box" type="text", name="pName">
                 
-                <br>
                 <button type="button" id="btnUndo" onclick="onUndo()">Undo</button>
             </form>
             
@@ -65,7 +70,13 @@
             <table id="report_table">
                 <thead>
                     <tr>
-                        <th colspan="2" id="report_title"><%= reportTitle %></th>
+                        <th colspan="2" id="report_title">
+                            <% if (playlistTitle) { %>
+                                <%= reportTitle %> <br> <%= playlistTitle %>
+                            <% } else {%>
+                                <%= reportTitle %>
+                            <% } %> 
+                        </th>
                     </tr>
                     <tr>
                         <th>Producer Assigned Songs</th>
@@ -87,7 +98,7 @@
             <h3>Producer's Notes: <%= dateString %></h3>
             <ul id="notes_list">
                 <% for( let index = 0; index < prodNotes.length; index++ ) { %>
-                    <li><%= prodNotes[index].dj + ": " + prodNotes[index].desc %></li>
+                    <li><%= prodNotes[index].prod + ": " + prodNotes[index].comment %></li>
                 <% } %>
             </ul>
         </article>

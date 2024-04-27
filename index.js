@@ -7,6 +7,7 @@ import { dirname, join } from "path";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import session from "express-session"; 
 
 dotenv.config();
 
@@ -15,13 +16,23 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
+// Add the session middleware here
+app.use(session( {
+    secret: 'could be anything',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Connect to databse
 const mongooseClientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
+  dbName: 'RadioStation'
 };
 await mongoose.connect(process.env.MONGO_URL, mongooseClientOptions);
 await mongoose.connection.db.admin().command({ ping: 1 });
 console.log("Connected to MongoDB");
 
+// Set EJS
 app.set("views", "./views");
 app.set("view engine", "ejs");
 
@@ -38,80 +49,9 @@ managerRouter.handleAll(app);
 producerRouter.handleAll(app);
 djRouter.handleAll(app);
 
+// Load home page
 app.get("/", (_req, res) => {
-  res.sendFile(join(__dirname, "views/Home/index.html"));
-});
-
-// Ejs for Producer
-app.get("/Prod", (_req, res) => {
-  const days = [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-  ];
-
-  const podcasts = [
-    { name: "Good Podcast", episode: "9", duration: "1hr 30min" },
-    { name: "Bad Podcast", episode: "10", duration: "1hr" },
-    { name: "Okay Podcast", episode: "1", duration: "1hr 45min" },
-    { name: "Awesome Podcast", episode: "12", duration: "1hr 50min" },
-    { name: "Cool Podcast", episode: "5", duration: "1hr 30min" },
-    { name: "Cringe Podcast", episode: "7", duration: "1hr 35min" },
-    { name: "Boring Podcast", episode: "3", duration: "2hr" },
-  ];
-
-  const songs = [
-    { name: "Vibin", artist: "Joe Smith" },
-    { name: "Back to back", artist: "Jim Jones" },
-    { name: "Ghosted", artist: "Polly Grace" },
-    { name: "Golden Dust", artist: "Shiny" },
-    { name: "Whispers", artist: "Paranoia" },
-    { name: "Our Galaxy", artist: "Cosmos" },
-    { name: "Dreamy", artist: "Andy A." },
-    { name: "Vast Landscape", artist: "Hustler" },
-    { name: "Night thoughts", artist: "Y" },
-  ];
-  res.render(join(__dirname, "views/partials/Producer/pages/index"), {
-    days: days,
-    podcasts: podcasts,
-    songs: songs,
-    podHandler: "podSearch();",
-    djHandler: "djSearch();",
-    userHandler: "user();",
-  });
+  res.sendFile(join(__dirname, "public/Home/index.html"));
 });
 
 const LISTEN_PORT = process.env.RADIO_STATION_LISTEN_PORT || 8080;
